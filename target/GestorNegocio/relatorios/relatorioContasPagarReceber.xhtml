@@ -1,0 +1,102 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
+      template="/WEB-INF/template/Layout.xhtml">
+	
+	<ui:define name="conteudo">
+		
+		<f:metadata>
+			<f:event listener="#{CRelatorioContasPagarReceber.inicializar}" type="preRenderView"  />
+		</f:metadata>
+	
+		<h:form id ="frmRelatorio">
+			<h1 class="ac-titulo-pagina">
+				#{CRelatorioContasPagarReceber.tipoConta.codigo == 0 ? "Relatório de Contas a Receber" : "Relatório de Contas a Pagar"}
+			</h1>			
+			
+			
+			<p:messages autoUpdate="true" closable="true" />
+			
+			<p:toolbar style="margin-top: 20px">
+				
+				<p:toolbarGroup align="right">
+					<p:button outcome="/relatorios/relatorioContasPagarReceber" value="Limpar Campos" />
+					<p:separator />
+					<p:commandButton action="#{CRelatorioContasPagarReceber.gerarRelatorio}" value="Gerar Relatório" ajax="false"/>
+				</p:toolbarGroup>
+				
+			</p:toolbar>
+			
+			<div class="ui-fluid">
+
+				<p:panelGrid columns="4" layout="grid" styleClass="panelgrid-noborder">
+				
+					<p:panel>
+   						<p:outputLabel value="Tipo de Conta" for="tipoConta"/>
+	    				<p:selectOneButton id="tipoConta" value="#{CRelatorioContasPagarReceber.tipoConta}" required="true" requiredMessage="Selecione o tipo de conta!" update="@form" >
+	    					<f:selectItems var="tipoConta" value="#{CRelatorioContasPagarReceber.comboTipoConta}" itemLabel="#{tipoConta.descricao}"  itemValue="#{tipoConta}" />
+	    					<p:ajax event="change" update="frmRelatorio" />
+	    				</p:selectOneButton>
+	    				
+	    				<h:outputText value="Contas Vencidas?" styleClass="descCampo" />
+						<p:selectBooleanButton value="#{CRelatorioContasPagarReceber.vencidas}" offLabel="Não" onLabel="Sim">
+							<p:ajax event="change" update="vencimentoFim" />
+						</p:selectBooleanButton>	
+						
+   					</p:panel>
+					
+					<p:panel>
+						<p:outputLabel value="Vencimento de" for="vencimentoInicio" />
+						<p:calendar size="10"  pattern="dd/MM/yyyy" id="vencimentoInicio" value="#{CRelatorioContasPagarReceber.dataVencimentoInicial}" >
+							<f:convertDateTime locale="pt_BR" timeZone="America/Sao_Paulo" />
+							<p:ajax event="dateSelect" />
+						</p:calendar>
+						<p:outputLabel value="até" for="vencimentoFim" />
+						<p:calendar size="10"  pattern="dd/MM/yyyy" id="vencimentoFim" value="#{CRelatorioContasPagarReceber.dataVencimentoFinal}">
+							<f:convertDateTime locale="pt_BR" timeZone="America/Sao_Paulo" />
+							<p:ajax event="dateSelect" />
+						</p:calendar>
+					</p:panel>
+										
+					<p:panel>
+						<p:outputLabel>
+							#{CRelatorioContasPagarReceber.tipoConta.codigo == 0 ? "Receber de" : "Pagar a"}
+						</p:outputLabel>
+						
+						<p:autoComplete id="cliente" size="40" rendered="#{CRelatorioContasPagarReceber.tipoConta.codigo == 0}"
+							value="#{CRelatorioContasPagarReceber.parcela.receita.cliente}" completeMethod="#{CRelatorioContasPagarReceber.completarCliente}"
+							var="pessoa" itemLabel="#{pessoa.nome}" itemValue="#{pessoa}" forceSelection="true"
+							converter="pessoaConverter">
+							<p:column>
+								<h:outputText value="#{pessoa.cpf} #{pessoa.nome}" />
+							</p:column>										
+						</p:autoComplete>
+							
+						<p:autoComplete id="fornecedor" size="40" rendered="#{CRelatorioContasPagarReceber.tipoConta.codigo == 1}"
+							value="#{CRelatorioContasPagarReceber.parcela.despesa.fornecedor}" completeMethod="#{CRelatorioContasPagarReceber.completarFornecedor}"
+							var="fornecedor" itemLabel="#{fornecedor.nome}" itemValue="#{fornecedor}" forceSelection="true"
+							converter="fornecedorConverter">
+							<p:column>
+								<h:outputText value="#{fornecedor.cpfCnpj} #{fornecedor.nome}" />
+							</p:column>										
+						</p:autoComplete>
+								
+						<p:outputLabel value="Categoria de Conta" for="catConta" />
+						<p:selectOneMenu id="catConta" value="#{CRelatorioContasPagarReceber.parcela.receita.categoriaConta}"
+							converter="categoriaContaConverter">
+							<f:selectItem itemLabel="Todas" />
+							<f:selectItems value="#{CRelatorioContasPagarReceber.listaCategoriaContas}" var="categoriaConta" 
+								itemValue="#{categoriaConta}" itemLabel="#{categoriaConta.nome}" />
+						</p:selectOneMenu>
+					</p:panel>
+				</p:panelGrid>
+
+			</div>
+						
+		</h:form>
+	</ui:define>
+	
+</ui:composition>

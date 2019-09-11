@@ -1,0 +1,180 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
+      template="/WEB-INF/template/Layout.xhtml">
+      
+      <ui:define name="conteudo">
+      	<h1 class="ac-titulo-pagina">#{CDentistaBean.editando ? 'Edição de Dentista' : 'Novo Dentista'}</h1>
+      	
+		<f:metadata>
+			<o:viewParam name="dentista" value="#{CDentistaBean.chaveRegistroEdicao}" />
+			<f:event listener="#{CDentistaBean.inicializar}" type="preRenderView" />
+		</f:metadata>
+
+      	
+      	<h:form id="frm">
+      		<p:toolbar>
+      			<p:toolbarGroup>
+      			<p:button value = "Novo Dentista" outcome="/dentistas/CadastroDentista"/>
+      				
+      			</p:toolbarGroup>
+      			
+      			<p:toolbarGroup align="right">
+      				<p:commandButton value = "Salvar" action="#{CDentistaBean.salvar}" process="tabView @this" update="@form"/>
+      				<p:separator />
+      				<p:button value="Pesquisar" outcome="/dentistas/PesquisaDentista" />
+      			</p:toolbarGroup>
+      		</p:toolbar>
+      		
+      		<p:messages autoUpdate="false" closable="true"/>
+      		
+      		<div class="ui-fluid">
+	      		<p:tabView style="margin-top: 20px" id="tabView">
+	      			<p:tab title="Dados básicos">
+	      				<p:panelGrid id="dadosBasicos" columns="4" layout="grid"
+	      						styleClass="panelgrid-noborder">
+	      					
+	      					<p:panel rendered="#{CDentistaBean.excluivel}">
+		      					<p:outputLabel value="Cód. Cliente" for="codigo" />
+		      					<p:inputText id="codigo" readonly="true" value="#{CDentistaBean.dentista.chaveRegistro}" />
+	      					</p:panel>
+	      						
+	      					<p:panel>
+		      					<p:outputLabel value="Nome" for="nome" />
+		      					<p:inputText id="nome" required="true" value="#{CDentistaBean.dentista.nome}" />
+	      					</p:panel>
+	      	
+	      					<p:panel>
+	      						<p:outputLabel value="CPF" for="cpf" />
+		      					<p:inputMask id="cpf"  mask="999.999.999-99" value="#{CDentistaBean.dentista.cpf}" />
+	      					</p:panel>
+
+	      					<p:panel>
+		      					<p:outputLabel value="RG" for="rg" />
+		      					<p:inputMask id="rg"  value="#{CDentistaBean.dentista.rg}" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Data de nascimento" for="dataNascimento" />
+		      					<p:inputMask mask="99/99/9999" id="dataNascimento" value="#{CDentistaBean.dentista.dataNascimento}">
+		      						<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+		      					</p:inputMask>
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Especialidade" for="especialidade" />
+		      					<p:inputText id="especialidade"  value="#{CDentistaBean.dentista.especialidade}" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Número do Conselho" for="numConselho" />
+		      					<p:inputText id="numConselho"  value="#{CDentistaBean.dentista.numeroConselho}" />
+	      					</p:panel>
+      					
+	      					<p:panel>
+		      					<p:outputLabel value="E-mail" for="email" />
+		      					<p:inputText id="email" value="#{CDentistaBean.dentista.email}" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Telefone 1" for="telefone1" />
+		      					<p:inputMask id="telefone1" required="true" value="#{CDentistaBean.dentista.telefone1}" mask="(99) 9999-9999?9" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Telefone 2" for="telefone2" />
+		      					<p:inputMask id="telefone2" value="#{CDentistaBean.dentista.telefone2}" mask="(99) 9999-9999?9" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Telefone 3" for="telefone3" />
+		      					<p:inputMask id="telefone3" value="#{CDentistaBean.dentista.telefone3}" mask="(99) 9999-9999?9" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Data de Cadastro" for="dataCadastro" />
+		      					<p:inputMask mask="99/99/9999" id="dataCadastro" value="#{CDentistaBean.dentista.dataCadastro}">
+		      						<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+		      					</p:inputMask>
+	      					</p:panel>
+	      					      						 							
+							<p:panel>
+		      					<p:outputLabel value="Status" for="status" />
+		      					<p:selectOneMenu id="status" value="#{CDentistaBean.dentista.status}" required="true" requiredMessage="Selecione o Status desse cliente">
+		      						<f:selectItem itemLabel="Selecione" />
+		      						<f:selectItem itemLabel="Ativo" itemValue="Ativo" />
+		      						<f:selectItem itemLabel="Inativo" itemValue="Inativo" />
+		      					</p:selectOneMenu>
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Comissão (%)" for="comissao" />
+		      					<p:inputText id="comissao"  value="#{CDentistaBean.dentista.comissao}" />
+	      					</p:panel>			
+	      				
+	      				</p:panelGrid>
+	      				
+	      				<p:panel id="toggleable" collapsed="true" header="Endereço" toggleable="true" toggleSpeed="500" closeSpeed="500" widgetVar="panel">
+ 					 
+ 					 		<p:panelGrid columns="4" layout="grid" styleClass="panelgrid-noborder">
+					         	<p:panel>
+									<p:outputLabel value="Logradouro" for="logradouro" />
+									<p:inputText id="logradouro" value="#{CDentistaBean.dentista.endereco.logradouro}" /> 
+								</p:panel>
+								
+								<p:panel>				
+									<p:outputLabel value="Número" for="numeroEndereco" />
+									<p:inputText id="numeroEndereco" value="#{CDentistaBean.dentista.endereco.numero}" />
+								</p:panel>
+								
+								<p:panel>							
+									<p:outputLabel value="Bairro" for="bairro" />
+									<p:inputText id="bairro" value="#{CDentistaBean.dentista.endereco.bairro}" />
+								</p:panel>
+								
+								<p:panel>
+									<p:outputLabel value="Complemento" for="complemento" />
+									<p:inputText id="complemento" value="#{CDentistaBean.dentista.endereco.complemento}" />
+								</p:panel>
+								
+								<p:panel>
+									<p:outputLabel value="UF" for="uf" />
+									<p:selectOneMenu id="uf" value="#{CDentistaBean.filtro.uf}">
+										<f:selectItems value="#{CDentistaBean.comboUFSigla}" />
+										<p:ajax event="change" listener="#{CDentistaBean.obterCidades}" update="cidade" />
+									</p:selectOneMenu>
+								</p:panel>
+								
+								<p:panel>
+									<p:outputLabel value="Cidade" for="cidade" />
+									<p:selectOneMenu id = "cidade" value="#{CDentistaBean.dentista.endereco.cidade}">
+										<f:selectItems var="cidade" itemLabel="#{cidade.nome}" itemValue="#{cidade}" 
+											value="#{CDentistaBean.listaCidades}" />
+											<p:ajax event="change" />
+									</p:selectOneMenu>
+								</p:panel>
+								
+								<p:panel>
+									<p:outputLabel value="CEP" for="cep" />
+									<p:inputMask id="cep" value="#{CDentistaBean.dentista.endereco.cep}" />
+								</p:panel>
+
+							</p:panelGrid>
+					    </p:panel>
+	      				
+	      			</p:tab>
+	      				      			
+	      			<p:tab title="Observações">
+	      				<p:inputTextarea rows="7" value="#{CDentistaBean.dentista.observacoes}" />
+	      			</p:tab>
+	      			
+	      		</p:tabView>
+	      
+      		</div>   		
+      	</h:form>
+      </ui:define>
+      
+</ui:composition>

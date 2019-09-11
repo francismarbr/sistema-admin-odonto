@@ -1,0 +1,165 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
+      template="/WEB-INF/template/Layout.xhtml">
+      
+      <ui:define name="conteudo">
+      	<h1 class="ac-titulo-pagina">Entradas (Compras)</h1>
+
+
+      	<h:form id="frm">
+      		<p:toolbar>
+      			<p:toolbarGroup>
+      			<p:button value = "Iniciar Nova Entrada" outcome="/movimentacaoestoque/EntradaEstoque"/>
+      				
+      			</p:toolbarGroup>
+      			
+      			<p:toolbarGroup align="right">
+      				<p:commandButton value = "Salvar" action="#{CMovimentacaoEstoqueBean.salvar}" process="@this" update="@form"/>
+      				<p:separator />
+      				<p:button value="Ver Movimentações" outcome="/movimentacaoestoque/Movimentacao" />
+      			</p:toolbarGroup>
+      		</p:toolbar>
+      		
+      		<p:messages autoUpdate="true" closable="true"/>
+      		
+      		<div class="ui-fluid">
+      			      				
+     				<p:button rendered="#{seguranca.liberarMenuEmpresaPlanoMCM}" value="Adicionar Produto" styleClass="botaoVerde" style="margin-top: 20px; width: 100px;"
+					onclick="PF('novoItemProdutoDialog').show(); return false" />
+
+
+				<p:dataTable value="#{CMovimentacaoEstoqueBean.listaItensComprados}" var="item"   
+					emptyMessage="Nenhum item cadastrado"
+					style="margin-top: 10px" id="itemProdutoTable">
+								
+					<p:column headerText="Produto">
+						<h:outputText value="#{item.produto.nome}" />
+					</p:column>
+			
+					<p:column headerText="Quantidade" styleClass="centralizado">
+						<h:outputText value="#{item.quantidade}" />
+					</p:column>
+					
+					<p:column headerText="Valor Unitário" styleClass="centralizado">
+						<h:outputText value="#{item.valorUnitario}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+			
+					<p:column headerText="Data da Compra" styleClass="centralizado">
+						<h:outputText value="#{item.dataCompra}">
+							<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Fornecedor">
+						<h:outputText value="#{item.fornecedor.nome}" />
+					</p:column>
+
+			
+					<p:column style="text-align: center; width: 70px">
+						<p:commandButton icon="ui-icon-trash" process="@this" title="Excluir"
+							oncomplete="PF('excluirItemProduto').show()" update=":frm:excluirItemProdutoDialog">
+							<f:setPropertyActionListener
+								target="#{CMovimentacaoEstoqueBean.itemProdutoMovimentado}" value="#{item}" />
+						</p:commandButton>
+			
+					</p:column>
+					
+					
+			
+				</p:dataTable>
+
+	      
+      		</div>
+      		
+      			<p:dialog widgetVar="novoItemProdutoDialog" header="Novo Produto" id="novoItemProdutoDialog"
+					 resizable="false" modal="true" responsive="true">
+					 
+					 <p:messages autoUpdate="true" closable="true" />
+			
+					<h:panelGroup id="novoItemProdutoPanel" layout="block" styleClass="ui-fluid">
+									
+						<p:panelGrid columns="1" layout="grid" styleClass="panelgrid-noborder">
+							<p:panel>
+								<p:outputLabel value="Fornecedor" for="fornecedor" />
+								<p:autoComplete id="fornecedor" size="40" dropdown="false" converter="fornecedorConverter"
+									value="#{CMovimentacaoEstoqueBean.fornecedor}" completeMethod="#{CMovimentacaoEstoqueBean.completarFornecedor}"
+									var="fornecedor" itemLabel="#{fornecedor.nome}" itemValue="#{fornecedor}" forceSelection="true">
+									<p:column>
+										<h:outputText value="#{fornecedor.cpfCnpj} #{fornecedor.nome}" />
+									</p:column>										
+								</p:autoComplete>
+							</p:panel>
+						</p:panelGrid>
+			
+						<p:panelGrid columns="2" layout="grid" styleClass="panelgrid-noborder">
+						
+							<p:panel>
+								<p:outputLabel value="Produto" for="produto" />
+								<p:autoComplete id="produto" size="40" dropdown="false" converter="produtoConverter"
+									value="#{CMovimentacaoEstoqueBean.itemProdutoMovimentado.produto}" completeMethod="#{CMovimentacaoEstoqueBean.completarProduto}"
+									var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}" forceSelection="true" required="true" 
+									requiredMessage="O campo observação deve ser preenchido">
+									<p:column>
+										<h:outputText value="#{produto.nome}" />
+									</p:column>										
+								</p:autoComplete>
+							</p:panel>
+
+							<p:panel>
+								<p:outputLabel value="Quantidade" for="qtde" />
+								<p:inputText id="qtde" value="#{CMovimentacaoEstoqueBean.itemProdutoMovimentado.quantidade}" required="true" 
+									requiredMessage="O campo Quantidade deve ser preenchido" /> 
+							</p:panel>
+						
+							<p:panel>
+								<p:outputLabel value="Valor Unitário" for="valorUnitario" />
+								<p:inputText id="valorUnitario" value="#{CMovimentacaoEstoqueBean.itemProdutoMovimentado.valorUnitario}" required="true" 
+									requiredMessage="O campo Valor Unitário deve ser preenchido">
+									<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+								</p:inputText>
+							</p:panel>
+							
+							<p:panel>
+								<p:outputLabel value="Data Compra" for="dataCompra" />
+								<p:inputMask id="dataCompra" mask="99/99/9999" value="#{CMovimentacaoEstoqueBean.itemProdutoMovimentado.dataCompra}" >
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+								</p:inputMask>
+							</p:panel>
+							
+						</p:panelGrid>
+			
+						<p:commandButton value="Adicionar" styleClass="botaoVerde"
+							action="#{CMovimentacaoEstoqueBean.adicionarItemLista}" id="adicionar"
+							update="itemProdutoTable novoItemProdutoPanel"
+							process="novoItemProdutoDialog" style="margin-top: 20px; width: 100px; float: right;" />
+			
+					</h:panelGroup>
+				</p:dialog>
+				
+			
+				
+			
+				<p:confirmDialog header="Excluir Item"
+					message="Deseja remover este item?"
+					widgetVar="excluirItemProduto" id="excluirItemProdutoDialog">
+			
+					<p:commandButton value="Sim"
+						oncomplete="PF('excluirItemProduto').hide()"
+						action="#{CMovimentacaoEstoqueBean.removerItemLista}" process="@this"
+						update="itemProdutoTable" />
+					<p:button value="Não"
+						onclick="PF('excluirItemProduto').hide(); return false;" />
+			
+				</p:confirmDialog>
+
+      		
+      	</h:form>
+      </ui:define>
+      
+</ui:composition>

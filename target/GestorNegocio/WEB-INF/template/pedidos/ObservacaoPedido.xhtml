@@ -1,0 +1,11 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<h:panelGroup layout="block" style="padding-right: 10px">
+	<p:inputTextarea rows="5" style="width: 100%" value="#{CPedidoBean.pedido.observacao}" 
+		disabled="#{CPedidoBean.pedido.naoAlteravel}"/>
+	</h:panelGroup>
+</ui:composition>

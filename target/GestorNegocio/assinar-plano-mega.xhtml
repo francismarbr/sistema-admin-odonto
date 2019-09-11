@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=width-device, initial-scale=1" />
+	<title>Cadastre-se</title>
+
+	<h:outputStylesheet library="css" name="sistema.css" />
+	<h:outputStylesheet library="css" name="custom.css" />
+	<h:outputStylesheet library="css" name="layout.css" />
+	<h:outputStylesheet library="css" name="componentes.css" />
+
+	<!-- Facebook Pixel Code -->
+	<script>
+		//<![CDATA[
+		!function(f, b, e, v, n, t, s) {
+			if (f.fbq)
+				return;
+			n = f.fbq = function() {
+				n.callMethod ? n.callMethod.apply(n, arguments) : n.queue
+						.push(arguments)
+			};
+			if (!f._fbq)
+				f._fbq = n;
+			n.push = n;
+			n.loaded = !0;
+			n.version = '2.0';
+			n.queue = [];
+			t = b.createElement(e);
+			t.async = !0;
+			t.src = v;
+			s = b.getElementsByTagName(e)[0];
+			s.parentNode.insertBefore(t, s)
+		}(window, document, 'script',
+				'https://connect.facebook.net/en_US/fbevents.js');
+		fbq('init', '591588401291843');
+		fbq('track', 'PageView');
+		fbq('track', 'Purchase', {
+			value : 87,
+			currency : 'BRL',
+		});
+		//]]>
+	</script>
+	<noscript>
+		//
+		<![CDATA[
+			<img height="1" width="1" style="display:none"
+		  src="https://www.facebook.com/tr?id=591588401291843&ev=PageView&noscript=1"
+		/>
+		// ]]>
+	</noscript>
+
+	<!-- End Facebook Pixel Code -->
+
+</h:head>
+
+<h:body>
+
+	<div class="main">
+
+		<f:metadata>
+			<f:event listener="#{CEmpresaBean.inicializar}" type="preRenderView" />
+			<f:event listener="#{CEmpresaBean.planoMega}" type="preRenderView" />
+		</f:metadata>
+
+		<h:form id="frm">
+
+			<p:messages autoUpdate="false" closable="true" />
+			<p:message for="email" />
+			<div class="ui-fluid">
+
+				<div style="text-align: center;">
+					<h:graphicImage library="images" name="logo.png" />
+
+					<h1 class="ac-titulo-pagina">
+						Cadastre-se abaixo!<br />Melhorar a gestão é a melhor estratégia
+						para crescer um negócio, porque você tem a visão certa do que
+						fazer.
+					</h1>
+				</div>
+
+				<p:panelGrid id="dadosBasicos" columnClasses="ui-grid-col-12"
+					columns="1" layout="grid">
+
+					<p:panel rendered="#{not CEmpresaBean.empresaCriada}">
+						<p:outputLabel value="Seu Nome" for="nomeFantasia" />
+						<p:inputText id="nomeFantasia" required="true"
+							value="#{CEmpresaBean.empresa.nomeFantasia}">
+							<p:ajax event="change" />
+						</p:inputText>
+					</p:panel>
+
+					<p:panel rendered="#{not CEmpresaBean.empresaCriada}">
+						<p:outputLabel value="Celular/WhatsApp" for="telefone1" />
+						<p:inputMask id="telefone1" required="true"
+							value="#{CEmpresaBean.empresa.telefone1}" mask="(99) 9999-9999?9">
+							<p:ajax event="change" />
+						</p:inputMask>
+					</p:panel>
+
+					<p:panel rendered="#{not CEmpresaBean.empresaCriada}">
+						<p:outputLabel value="Seu Email" for="email" />
+						<p:inputMask id="email" required="true"
+							value="#{CEmpresaBean.usuario.email}"
+							validatorMessage="E-mail incorreto">
+							<f:validateRegex
+								pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+							<p:ajax event="change" />
+						</p:inputMask>
+					</p:panel>
+
+					<p:panel rendered="#{not CEmpresaBean.empresaCriada}">
+						<p:outputLabel value="Usuário" for="usuario" />
+						<p:inputMask id="usuario" required="true"
+							value="#{CEmpresaBean.usuario.login}">
+							<p:ajax event="change" />
+						</p:inputMask>
+					</p:panel>
+
+					<p:panel id="senhaAcesso"
+						rendered="#{not CEmpresaBean.empresaCriada}">
+						<p:outputLabel value="Senha" for="senha" />
+						<p:password id="senha" redisplay="true" size="10" maxlength="15"
+							feedback="true" required="true"
+							rendered="#{not CEmpresaBean.verSenha}" weakLabel="Fraca"
+							goodLabel="Boa" strongLabel="Forte"
+							promptLabel="Informe uma senha"
+							value="#{CEmpresaBean.usuario.senha}">
+							<p:ajax event="change" />
+						</p:password>
+						<p:inputText size="10" maxlength="15" required="true"
+							rendered="#{CEmpresaBean.verSenha}"
+							value="#{CEmpresaBean.usuario.senha}">
+							<p:ajax event="change" />
+						</p:inputText>
+						<h:selectBooleanCheckbox value="#{CEmpresaBean.verSenha}">
+							<p:ajax event="change" update="senhaAcesso" />
+						</h:selectBooleanCheckbox>
+						<h:outputText value="Mostrar Senha." styleClass="descCampo" />
+					</p:panel>
+
+					<p:panel rendered="#{not CEmpresaBean.empresaCriada}">
+						<p:outputLabel>Você está assinando o plano #{CEmpresaBean.empresa.plano} de R$ 87,00/mês. </p:outputLabel>
+					</p:panel>
+
+				</p:panelGrid>
+				<p:panel rendered="#{not CEmpresaBean.empresaCriada}">
+					<p:commandButton value="Criar Conta e Melhorar Minha Gestão!"
+						action="#{CEmpresaBean.criarEmpresa}" process="@this"
+						update="@form" />
+				</p:panel>
+				<p:panel rendered="#{CEmpresaBean.empresaCriada}">
+					<p:button value="Acessar o sistema" outcome="/login.xhtml" />
+				</p:panel>
+			</div>
+
+		</h:form>
+
+		<div class="ui-g-12 ui-md-12 ui-lg-12">
+
+			Ao criar sua conta, você confirma que as informações por você
+			inseridas são verdadeiras e concorda com os
+			<a href="https://adminodonto.com/termos-de-uso" target="_blank">termos
+				de uso</a> e <a
+				href="https://adminodonto.com/politica-de-privacidade"
+				target="_blank">política</a>.
+			<p>
+				<center>
+					Dúvidas? Fale Conosco. <br /> <a
+						href="https://adminodonto.com/contato" target="_blank">Contatos</a>
+				</center>
+			</p>
+		</div>
+
+	</div>
+
+
+
+
+
+</h:body>
+</html>

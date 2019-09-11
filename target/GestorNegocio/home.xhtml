@@ -1,0 +1,60 @@
+<ui:composition template="/WEB-INF/template/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<ui:define name="titulo">Dashboard</ui:define>
+	
+	<ui:define name="conteudo">
+		<f:metadata>
+			<f:event listener="#{CClienteBean.aniversariantesDeHoje}" type="preRenderView" />
+			<f:event listener="#{CGraficoTratamentoBean.preRender}" type="preRenderView" />
+		</f:metadata>
+		<br />
+		<div class="ui-fluid">
+			<!-- Gráfico Tratamentos -->
+			<p:panelGrid columns="1" layout="grid" styleClass="panelgrid-noborder">
+			<p:chart type="line" model="#{CGraficoTratamentoBean.model}" style="height:400px" responsive="true" />
+	    	</p:panelGrid>
+	    	
+	    	<p:panelGrid columns="2" layout="grid" styleClass="panelgrid-noborder">
+	    	
+		    	<p:dataTable  id="clientesTable" value="#{CClienteBean.listaAniversariantes}" var="cliente"
+		    		style="margin-top: 20px" emptyMessage="Nenhum aniversariante encontrado."
+		    		reflow="true" scrollable="true" scrollHeight="200">
+		    		<f:facet name="header">
+				        Aniversariantes do dia
+				    </f:facet>
+		    		<p:column headerText="Cód." styleClass="centralizado" sortBy="#{cliente.chaveRegistro}" >
+		    			<h:outputText value="#{cliente.chaveRegistro}" />
+		    		</p:column>
+		    		
+		    		<p:column headerText="Nome" sortBy="#{cliente.nome}">
+		    			<h:outputText value="#{cliente.nome}" />
+		    		</p:column>
+		    		
+		    		<p:column headerText="Data Nasc." styleClass="centralizado">
+		    			<h:outputText value="#{cliente.dataNascimento}">
+		    				<f:convertDateTime pattern="dd/MM/yyyy" />
+		    			</h:outputText>
+		    		</p:column>
+		    		
+		    		<p:column styleClass="centralizado">
+		    			<p:button style="width: 40px" outcome="/clientes/CadastroCliente" icon="ui-icon-plus" title="Ver mais Detalhes">
+		    				<f:param name="cliente" value="#{cliente.chaveRegistro}" />
+		    			</p:button>
+		    		</p:column>
+		    		
+		    	</p:dataTable>
+	    	</p:panelGrid>
+	    	
+	    	<p:panelGrid columns="2" layout="grid" styleClass="panelgrid-noborder">
+	    		<!-- <p:chart type="line" model="#{CGraficoTratamentoBean.model}" animate="true" title="Tratamentos" style="width:400px;" /> -->
+			</p:panelGrid>
+		</div>
+		
+	</ui:define>
+	
+</ui:composition>

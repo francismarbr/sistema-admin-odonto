@@ -1,0 +1,55 @@
+<ui:composition template="/WEB-INF/template/Layout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Pesquisa Modelos de Anamneses</ui:define>
+    
+    <ui:define name="conteudo">
+    	<f:metadata>
+    		<f:event listener="#{CAnamneseModeloBean.inicializar}" type="preRenderView" />
+		</f:metadata>
+    	<h1 class="ac-titulo-pagina" >Pesquisa Modelos de Anamneses</h1>
+    	<h:form id="frmPesquisa">
+	    	
+	    	
+	    	<p:toolbar style="margin-top: 20px">
+	    		<p:toolbarGroup align="right">
+	    			<p:button value="Novo Modelo" outcome="/modeloanamnese/ModeloAnamnese" />
+	    		</p:toolbarGroup>
+	    	</p:toolbar>
+
+	    	
+	    	<p:dataTable id="modelosTable" value="#{CAnamneseModeloBean.listaModelosAnamneses}" var="modelo"
+		    		style="margin-top: 20px" emptyMessage="Nenhum modelo encontrado."
+		    		rows="20" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+	    		
+	    		<p:column headerText="Nome do Modelo">
+	    			<h:outputText value="#{modelo.nome}"/>
+	    		</p:column>
+	    		
+	    		<p:column style="text-align: center; width: 100px">
+	    			<p:button icon="ui-icon-pencil" title="Editar" outcome="/modeloanamnese/ModeloAnamnese">
+	    				<f:param name="modelo" value="#{modelo.chaveRegistro}" />
+	    			</p:button>
+	    			<p:commandButton icon="ui-icon-trash" title="Excluir" oncomplete="PF('confirmacaoExclusao').show()"
+	    				process="@this" update=":frmPesquisa:confirmacaoExclusaoDialog">
+	    				<f:setPropertyActionListener value="#{modelo}" target="#{CAnamneseModeloBean.modeloSelecionado}" />
+	    			</p:commandButton>
+	    			
+	    		</p:column>
+	    	</p:dataTable>
+	    	
+	    	<p:confirmDialog header="Exclusão de Modelo" message="Tem certeza que deseja excluir o modelo #{CAnamneseModeloBean.modeloSelecionado.nome}?"
+	    		widgetVar="confirmacaoExclusao" id="confirmacaoExclusaoDialog">
+	    		<p:button value="Não" onclick="PF('confirmacaoExclusao').hide(); return false;" />
+	    		<p:commandButton value="Sim" oncomplete="PF('confirmacaoExclusao').hide();"
+	    			action="#{CAnamneseModeloBean.excluir}" process="@this" update=":frmPesquisa:modelosTable" />
+	    	</p:confirmDialog>
+
+	    	
+    	</h:form>
+    </ui:define>
+</ui:composition>

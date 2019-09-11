@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<p:dataTable value="#{CPedidoBean.pedido.itens}" var="item" rowIndexVar="linha" id="tabelaItens">
+
+		<p:column headerText="Procedimento">
+		
+			<h:outputText value="#{item.procedimento.nome}" rendered="#{item.procedimentoAssociado}" />
+			
+			<p:autoComplete styleClass="produto-tabela" value="#{CPedidoBean.procedimentoLinhaEditavel}"
+				completeMethod="#{CPedidoBean.completarProcedimento}" placeholder="Novo Procedimento / Serviço"
+				var="procedimento" itemLabel="#{procedimento.nome}" itemValue="#{procedimento}"
+				forceSelection="true" rendered="#{not item.procedimentoAssociado}">
+				<p:ajax event="itemSelect" update="tabelaItens :frmCadastro:totalPedido :frmCadastro:subtotal :frmCadastro:totalPedidoInferior"  
+					listener="#{CPedidoBean.carregarProcedimentoLinhaEditavel}"/>
+			</p:autoComplete>
+		</p:column>
+		<p:column headerText="Dente(s)" style="text-align:right; width: 120px">
+			<p:inputText value="#{item.dente}" rendered="#{item.procedimentoAssociado}" disabled="#{CPedidoBean.pedido.emitido}">
+				<p:ajax event="change" />
+			</p:inputText>
+		</p:column>
+		<p:column headerText="Categoria" style="text-align:right; width: 120px">
+			<h:outputText value="#{item.procedimento.categoria.nome}">
+				<f:convertNumber type="currency"/>
+			</h:outputText>
+			
+		</p:column>
+		<p:column headerText="Valor" style="text-align:right; width: 80px">
+			<h:outputText value="#{item.valor}" rendered="#{CPedidoBean.pedido.emitido}" >
+				<f:convertNumber type="currency" maxFractionDigits="2" minFractionDigits="2"/>
+			</h:outputText>
+			<p:inputText value="#{item.valor}" rendered="#{not CPedidoBean.pedido.emitido}">
+				<f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
+				<p:ajax event="change" process="@this" update="tabelaItens :frmCadastro:totalPedido :frmCadastro:subtotal :frmCadastro:totalPedidoInferior" 
+					listener="#{CPedidoBean.recalcularPedido}"/>
+			</p:inputText>
+			
+		</p:column>
+
+		<p:column headerText="Valor total" style="text-align:right; width: 100px">
+			<h:outputText value="#{item.valorTotal}">
+				<f:convertNumber type="currency" />
+			</h:outputText>
+			
+			
+		</p:column>
+		
+		<p:column headerText="Ação" style="text-align:center; width: 50px" >
+		<p:commandButton icon="ui-icon-trash" process="@this" title="Excluir" rendered="#{item.procedimentoAssociado}"
+			oncomplete="PF('excluirItem').show()" update=":frmCadastro:excluirItemDialog" 
+				disabled="#{CPedidoBean.pedido.naoAlteravel}" styleClass="botaoLaranja" >
+			<f:setPropertyActionListener
+				target="#{CPedidoBean.itemLinha}" value="#{linha}" />
+		</p:commandButton>
+		</p:column>
+		
+		<p:columnGroup type="footer">
+			<p:row>
+				<p:column colspan="5" footerText="Subtotal" style="text-align: right"/>
+				<p:column style="text-align:right">
+					<f:facet name="footer">
+						<h:outputText value="#{CPedidoBean.pedido.valorSubtotal}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</f:facet>
+				</p:column>
+			</p:row>
+		</p:columnGroup>
+	</p:dataTable>
+	
+	<p:confirmDialog header="Excluir Item"
+		message="Deseja excluir remover este item?"
+		widgetVar="excluirItem" id="excluirItemDialog">
+
+		<p:commandButton value="Sim"
+			oncomplete="PF('excluirItem').hide()"
+			action="#{CPedidoBean.removerItemPedido}" process="@this"
+			update="tabelaItens" />
+		<p:button value="Não"
+			onclick="PF('excluirItem').hide(); return false;" />
+
+	</p:confirmDialog>
+
+</ui:composition>

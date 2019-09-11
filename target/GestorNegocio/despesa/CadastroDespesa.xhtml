@@ -1,0 +1,327 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
+      template="/WEB-INF/template/Layout.xhtml">
+	
+	
+	
+	<ui:define name="titulo">#{CDespesaBean.editando ? "Edição de Despesa" : "Nova Despesa"}</ui:define>
+
+	
+	<ui:define name="conteudo">
+		
+		<f:metadata>
+			<o:viewParam name="despesa" value="#{CDespesaBean.chaveRegistroEdicao}" />
+			<f:event listener="#{CDespesaBean.inicializar}" type="preRenderView" />
+		</f:metadata>
+	
+		<h:form id="frmCadastro">
+			<h1 class="ac-titulo-pagina">#{CDespesaBean.editando ? "Edição de Despesa" : "Nova Despesa"}</h1>
+			
+			<p:messages autoUpdate="true" closable="true" />
+			
+			<p:toolbar style="margin-top: 20px">
+				<p:toolbarGroup >
+					<p:button value="Nova Despesa" outcome="/despesa/CadastroDespesa" />
+				</p:toolbarGroup>
+				
+				<p:toolbarGroup align="right">
+					<p:commandButton value="Salvar" action="#{CDespesaBean.salvar}" upadate="@form" disabled="#{(CDespesaBean.excluivel)}" />
+					<p:separator />
+					<p:button value="Pesquisar" outcome="/despesa/PesquisaDespesa"/>
+				</p:toolbarGroup>
+				
+			</p:toolbar>
+			
+			<div class="ui-fluid">
+				<p:tabView id="form-cadastro">
+					<p:tab id="dadosGerais" title="Dados Gerais">
+						<p:panelGrid columns="4" layout="grid" styleClass="panelgrid-noborder">
+							
+							<p:panel rendered="#{CDespesaBean.excluivel}">
+								<p:outputLabel value="Código" for="codigo" />
+								<p:inputText id="codigo" readonly="true" value="#{CDespesaBean.despesa.chaveRegistro}" />
+							</p:panel>
+							
+							<p:panel rendered="#{not CDespesaBean.excluivel}">
+								<h:selectBooleanCheckbox value="#{CDespesaBean.despesaQuitada}"	rendered="#{not CDespesaBean.excluivel}">
+									<p:ajax event="change" listener="#{CDespesaBean.ativarDespesaQuitada}" update="qtdParcelas, listaParcelas, frmCadastro" />
+								</h:selectBooleanCheckbox>
+								<h:outputText value="Foi Quitado?" styleClass="rotulo"	rendered="#{not CDespesaBean.excluivel}" />
+							</p:panel>
+										
+							<p:panel>
+								<p:outputLabel value="Descrição" for="descricao" />
+								<p:inputText id="descricao" value="#{CDespesaBean.despesa.nome}" 
+									readonly="#{(CDespesaBean.excluivel)}"/>
+							</p:panel>
+							
+							
+							<p:panel>
+								<p:outputLabel value="Valor Total" for="valorTotal" />
+								<p:inputText id="valorTotal" value="#{CDespesaBean.despesa.valorTotal}" onkeypress="return (MascaraMoeda(this,'.',',',event))"
+									readonly="#{(CDespesaBean.excluivel)}">
+									<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+									<p:ajax event="blur" process="@this" listener="#{CDespesaBean.gerarParcelas}" update="listaParcelas, valorAPagar" />
+								</p:inputText>
+							</p:panel>
+						
+							<p:panel>
+								<p:outputLabel value="Desconto" for="desconto" />
+								<p:inputText id="desconto" value="#{CDespesaBean.despesa.desconto}" onkeypress="return (MascaraMoeda(this,'.',',',event))"
+									readonly="#{(CDespesaBean.excluivel)}">
+									<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+									<p:ajax event="blur" listener="#{CDespesaBean.gerarParcelas}" update="listaParcelas, valorAPagar" />
+								</p:inputText>
+							</p:panel>
+							
+							<p:panel id="panel-parcelas">
+								<p:outputLabel value="Qtd. Parcelas" for="qtdParcelas" />
+								<p:inputText id="qtdParcelas" value="#{CDespesaBean.despesa.quantidadeParcelas}" 
+									readonly="#{(CDespesaBean.excluivel) or (CDespesaBean.despesaQuitada)}">
+									<p:ajax event="change" process="@this"  listener="#{CDespesaBean.gerarParcelas}" update="listaParcelas" />
+								</p:inputText>
+							</p:panel>
+							
+							<p:panel>
+								<p:outputLabel value="Vencimento" for="vencimento" />
+								<p:calendar size="10" pattern="dd/MM/yyyy" id="vencimento" value="#{CDespesaBean.despesa.dataVencimento}"
+									readonly="#{(CDespesaBean.excluivel)}">
+									<p:ajax event="dateSelect" listener="#{CDespesaBean.gerarParcelas}" update="listaParcelas" />
+								</p:calendar>							
+							</p:panel>
+							
+							<p:panel id="contaDebitar"  rendered="#{CDespesaBean.despesaQuitada}" >
+								<p:outputLabel value="Conta a Creditar" for="conta" rendered="#{CDespesaBean.despesaQuitada}" />
+								<p:selectOneMenu id="conta" value="#{CDespesaBean.contaBancaria}" converter="contaBancariaConverter"
+									disabled="#{(CDespesaBean.excluivel)}" rendered="#{CDespesaBean.despesaQuitada}" required="true" requiredMessage="Selecione a conta a Debitar">
+									<f:selectItem itemLabel="Selecione" />
+									<f:selectItems value="#{CDespesaBean.listaContasBancarias}" var="conta"
+										itemValue="#{conta}" itemLabel="#{conta.banco.nome} - #{conta.agencia}/#{conta.conta}" />
+								</p:selectOneMenu>
+							</p:panel>
+
+							<p:panel>
+								<p:outputLabel value="Pagar a" for="fornecedor" />
+									<p:autoComplete id="fornecedor" size="40"  readonly="#{(CDespesaBean.excluivel)}" converter="fornecedorConverter"
+										value="#{CDespesaBean.despesa.fornecedor}" completeMethod="#{CDespesaBean.completarFornecedor}"
+										var="fornecedor" itemLabel="#{fornecedor.nome}" itemValue="#{fornecedor}" forceSelection="true" required="true" requiredMessage="Selecione o fornecedor">
+										<p:column>
+											<h:outputText value="#{fornecedor.cpfCnpj} #{fornecedor.nome}" />
+										</p:column>										
+									</p:autoComplete>
+							</p:panel>
+							
+							<p:panel>
+								<p:outputLabel value="Categoria de Conta" for="catConta" />
+								<p:selectOneMenu id="catConta" value="#{CDespesaBean.despesa.categoriaConta}" converter="categoriaContaConverter"
+									disabled="#{(CDespesaBean.excluivel)}" required="true" requiredMessage="Você deve selecionar uma categoria de conta" >
+									<f:selectItem itemLabel="Selecione" />
+									<f:selectItems value="#{CDespesaBean.listaCategoriaContas}" var="categoriaConta" 
+										itemValue="#{categoriaConta}" itemLabel="#{categoriaConta.nome}" />
+								</p:selectOneMenu>
+							</p:panel>
+							
+							<p:panel id="panel-valorreceber">
+								<p:outputLabel value="Valor a Pagar" for="valorAPagar" /> <br />
+								<p:inputText id="valorAPagar"  value="#{CDespesaBean.despesa.valorAPagar}" readonly="true">
+									<f:convertNumber type="currency" />
+								</p:inputText>
+							</p:panel>
+							
+							<p:panel>
+								<p:outputLabel value="Observação" for="obs" />
+								<p:inputText id="obs" value="#{CDespesaBean.despesa.obs}" readonly="#{(CDespesaBean.excluivel)}" />
+							</p:panel>
+							
+							
+							</p:panelGrid>
+							
+							<hr />
+							
+							<p:dataTable id="listaParcelas"  rows="15" var="item"
+							value="#{CDespesaBean.despesa.parcelas}" paginator="true"
+							paginatorPosition="bottom" emptyMessage="Nenhuma parcela encontrada">
+
+							<p:column sortBy="#{item.numero}" headerText="Nº. Parcela" style="text-align:center;">
+								<h:outputText value="#{item.numero}"
+									rendered="#{item.numero != 0}" />
+								<h:outputText value="Entrada" rendered="#{item.numero == 0}" />
+							</p:column>
+
+							<p:column sortBy="#{item.dataVencimento}" headerText="Vencimento" style="text-align:center;">
+								<h:outputText value="#{item.dataVencimento}"
+									rendered="#{not (item.situacao.ordinal == 0)}">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+								</h:outputText>
+
+								<p:inputMask value="#{item.dataVencimento}" size="8"
+									readonly="#{(CDespesaBean.excluivel)}"
+									style="box-shadow: none; padding:0px;"
+									rendered="#{item.situacao.ordinal == 0}" required="true"
+									requiredMessage="Data de vencimento da parcela #{item.numero} deve ser informada"
+									converterMessage="Data de vencimento da parcela #{item.numero} é inválida"
+									onfocus="this.selectall();" mask="99/99/9999">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+									
+								</p:inputMask>
+							</p:column>
+
+							<p:column headerText="Valor" style="text-align:right;">
+								<h:outputText value="#{item.valor}" rendered="#{ not (item.situacao.ordinal == 0)}">
+									<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+								</h:outputText>
+								
+								<p:inputText value="#{item.valor}" size="8"
+									readonly="#{(CDespesaBean.excluivel)}"
+									required="true" requiredMessage="Informe o valor da parcela não pode ficar em branco."
+									autocomplete="off" maxlength="255"
+									converterMessage="O campo 'Valor despesa' deve ser numérico."
+									validatorMessage="O campo 'Valor despesa' deve ser informado com 3 dígitos"
+									rendered="#{item.situacao.ordinal == 0}"
+									onkeypress="return (MascaraMoeda(this,'.',',',event))">
+									<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+								</p:inputText>
+								
+							</p:column>
+
+							<p:column headerText="Vl. Pago" style="text-align:right;"
+								rendered="#{CDespesaBean.excluivel}">
+								<h:outputText value="#{item.valorTotalRecebidoPorParcela}">
+									<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Vl. Desc." style="text-align:right;"
+								rendered="#{CDespesaBean.excluivel}">
+								<h:outputText value="#{item.valorTotalDescontoPorParcela}">
+									<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Saldo" style="text-align:right;"
+							rendered="#{CDespesaBean.excluivel}">
+								<h:outputText value="#{item.valorTotalSaldoPorParcela}">
+									<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+
+							<p:column sortBy="#{item.situacao}" headerText="Situação"
+								style="text-align:center;">
+								<h:outputText value="#{item.situacao.descricao}"
+									rendered="#{item.situacao.ordinal == 3}" style="color:red;" />
+
+								<h:outputText value="#{item.situacao.descricao}"
+									rendered="#{not (item.situacao.ordinal == 3)}" />
+
+							</p:column>
+							
+							<p:column headerText="Histórico">
+								<p:inputText value="#{item.historico}" size="20"
+									style="box-shadow: none; padding:0px;"
+									onfocus="this.selectall();"
+									rendered="#{not CDespesaBean.excluivel}">
+									
+								</p:inputText>
+
+								<h:outputText value="#{item.historico}"
+									rendered="#{CDespesaBean.excluivel}" />
+							</p:column>
+
+						</p:dataTable>
+						
+					</p:tab>
+										
+					<p:tab title="Pagamentos" rendered="#{CDespesaBean.excluivel}">
+						<p:dataTable id="listaPagamentos" width="100%" rows="10"
+							var="item" align="center" value="#{CDespesaBean.listaPagamentos}"
+							paginator="true" paginatorPosition="bottom"
+							emptyMessage="Nenhum pagamento foi encontrado">
+
+							<p:column sortBy="#{item.parcela.numero}" headerText="Nº. Parcela"
+								style="text-align:center;">
+								<h:outputText value="#{item.parcela.numero}" />
+							</p:column>
+
+							<p:column sortBy="#{item.dataLancamento}"
+								headerText="Data Lançamento" style="text-align:center;">
+								<h:outputText value="#{item.dataLancamento}">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+										locale="pt_BR" timeZone="America/Sao_Paulo" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Valor Pago" style="text-align:right;">
+								<h:outputText value="#{item.valorMovimentado}">
+									<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Valor Cancelado" style="text-align:right;">
+								<h:outputText value="#{item.valorCancelado}">
+									<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Valor Desconto" style="text-align:right;">
+								<h:outputText value="#{item.valorDesconto}">
+									<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+
+
+						</p:dataTable>
+					</p:tab>					
+
+					<p:tab title="Cancelamentos" rendered="#{CDespesaBean.excluivel}">
+						<p:dataTable id="listaCancelamento" width="100%" rows="10"
+							var="item" align="center" value="#{CDespesaBean.listaCancelamentos}"
+							paginator="true" paginatorPosition="bottom"
+							emptyMessage="Nenhum cancelamento encontrado">
+
+							<p:column sortBy="#{item.parcela.numero}" headerText="Parcela"
+								style="text-align:center;">
+								<h:outputText value="#{item.parcela.numero}" />
+							</p:column>
+
+							<p:column sortBy="#{item.data}" headerText="Data"
+								style="text-align:center;">
+								<h:outputText value="#{item.data}">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+										locale="pt_BR" timeZone="America/Sao_Paulo" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Usuário">
+								<h:outputText value="#{item.usuario.nome}" />
+							</p:column>
+
+							<p:column headerText="Observação">
+								<h:outputText value="#{item.observacao}" />
+							</p:column>
+
+
+						</p:dataTable>
+					</p:tab>					
+
+				</p:tabView>
+		
+			</div>
+						
+		</h:form>
+	</ui:define>
+	
+	<script>
+		function configurarMoeda() {
+			$(".moeda").maskMoney({ decimal: ",", thousands: ".", allowZero: true });
+		}
+		
+		$(document).ready(function() {
+			configurarMoeda();
+		});
+	</script>
+	
+</ui:composition>

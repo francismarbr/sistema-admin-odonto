@@ -1,0 +1,130 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+
+	<script>
+/*Função responsavel por fechar o dialog após a inclusão do endereco*/
+function tratarInclusaoEndereco(args){
+	if(!args.validationFailed){
+		PF('inclusaoEnderecoDialog').hide();
+		}
+}
+</script>
+
+	<p:button value="Adicionar endereço" style="margin-top: 20px"
+		onclick="PF('inclusaoEnderecoDialog').show(); return false" />
+
+
+	<p:dataTable id="enderecoTable" style="margin-top: 20px"
+		value="#{cadastroClienteBean.pessoa.enderecos}" var="endereco"
+		emptyMessage="Nenhum pedido encontrado" rows="10" paginator="true"
+		paginatorAlwaysVisible="false" paginatorPosition="bottom">
+
+		<p:column headerText="Logradouro" style="text-align: left">
+			<h:outputText value="#{endereco.logradouro}" />
+		</p:column>
+
+		<p:column headerText="Número" style="text-align: left; width: 50px">
+			<h:outputText value="#{endereco.numero}" />
+		</p:column>
+
+		<p:column headerText="Bairro" style="text-align: left; width: 130px">
+			<h:outputText value="#{endereco.bairro}" />
+		</p:column>
+
+		<p:column headerText="Complemento"
+			style="text-align: left; width: 130px">
+			<h:outputText value="#{endereco.complemento}" />
+		</p:column>
+
+		<p:column headerText="CEP" style="text-align: left; width: 100px">
+			<h:outputText value="#{endereco.cep}" />
+		</p:column>
+
+		<p:column headerText="Cidade" style="text-align: left; width: 130px">
+			<h:outputText value="#{endereco.cidade}" />
+		</p:column>
+
+		<p:column headerText="UF" style="text-align: left; width: 130px">
+			<h:outputText value="#{endereco.uf}" />
+		</p:column>
+
+		<p:column style="text-align: center; width: 70px">
+			<p:commandButton icon="ui-icon-trash" process="@this" title="Excluir"
+				oncomplete="PF('excluirEnderecoDialog').show()">
+				<f:setPropertyActionListener
+					target="#{cadastroClienteBean.endereco}" value="#{endereco}" />
+			</p:commandButton>
+
+		</p:column>
+
+	</p:dataTable>
+
+	<p:dialog header="Inclusão de endereco" id="enderecoDialog"
+		widgetVar="inclusaoEnderecoDialog" modal="true" resizable="false">
+
+		<h:panelGroup id="inclusaoPanel">
+
+			<p:messages autoUpdate="false" closable="true" id="msgDialog" />
+
+			<h:panelGrid columns="2">
+			
+				<p:outputLabel value="Logradouro" for="logradouro" />
+				<p:inputText id="logradouro" style="width: 250px"
+					value="#{cadastroClienteBean.endereco.logradouro}"> 
+					</p:inputText>
+
+				<p:outputLabel value="Número" for="numeroEndereco" />
+				<p:inputText id="numeroEndereco" style="width: 50px"
+					value="#{cadastroClienteBean.endereco.numero}" />
+
+				<p:outputLabel value="Bairro" for="bairro" />
+				<p:inputText id="bairro" style="width: 150px"
+					value="#{cadastroClienteBean.endereco.bairro}" />
+
+				<p:outputLabel value="Complemento" for="complemento" />
+				<p:inputText id="complemento" style="width: 150px"
+					value="#{cadastroClienteBean.endereco.complemento}" />
+
+				<p:outputLabel value="CEP" for="cep" />
+				<p:inputMask id="cep" style="width: 80px" mask="99999999"
+					value="#{cadastroClienteBean.endereco.cep}" />
+
+				<p:outputLabel value="Cidade" for="cidade" />
+				<h:panelGroup>
+					<p:inputText id="cidade" style="width: 100px"
+						value="#{cadastroClienteBean.endereco.cidade}" />
+					<p:spacer />
+
+					<p:outputLabel value="UF" for="uf" />
+					<p:inputText id="uf" style="width: 40px"
+						value="#{cadastroClienteBean.endereco.uf}" />
+				</h:panelGroup>
+			</h:panelGrid>
+
+			<p:commandButton value="Incluir"
+				action="#{cadastroClienteBean.adicionarEndereco}" id="incluir"
+				update="enderecoTable inclusaoPanel"
+				process="@this inclusaoPanel"
+				oncomplete="tratarInclusaoEndereco(args)" />
+
+		</h:panelGroup>
+	</p:dialog>
+
+	<p:confirmDialog header="Exclusão de endereço"
+		message="Tem certeza que deseja excluir o endereço?"
+		widgetVar="excluirEnderecoDialog">
+
+		<p:commandButton value="Sim"
+			oncomplete="PF('excluirEnderecoDialog').hide()"
+			action="#{cadastroClienteBean.removerEndereco}" process="@this"
+			update="enderecoTable" />
+		<p:button value="Não"
+			onclick="PF('excluirEnderecoDialog').hide(); return false;" />
+
+	</p:confirmDialog>
+
+</ui:composition>

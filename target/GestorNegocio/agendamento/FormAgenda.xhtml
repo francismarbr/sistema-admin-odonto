@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
+      template="/WEB-INF/template/Layout.xhtml">
+	
+	
+	
+	<ui:define name="titulo">#{CAgendamentoBean.editando ? "Edição de Agendamento" : "Novo Agendamento"}</ui:define>
+
+	
+	<ui:define name="conteudo">
+		
+		<f:metadata>
+			<o:viewParam name="item" value="#{CAgendamentoBean.chaveRegistroEdicao}" />
+			<f:event listener="#{CAgendamentoBean.inicializar}" type="preRenderView" />
+		</f:metadata>
+	
+		<h:form>
+			<h1 class="ac-titulo-pagina">#{CAgendamentoBean.editando ? "Edição de Agendamento" : "Novo Agendamento"}</h1>
+			
+			<p:messages autoUpdate="true"  closable="true" />
+			
+			<p:toolbar style="margin-top: 20px">
+				<p:toolbarGroup>
+					<p:button value="Novo Agendamento" outcome="/agendamento/FormAgenda" />
+				</p:toolbarGroup>
+				
+				<p:toolbarGroup align="right">
+				<p:commandButton id="botaoSalvar" value="Salvar" action="#{CAgendamentoBean.salvar}" update="@form" />
+					<p:button value="Pesquisar" outcome="/agendamento/ConsultarAgenda" />
+				</p:toolbarGroup>
+				
+			</p:toolbar>
+			
+			<div class="ui-fluid">
+			
+				<p:panelGrid columns="4" layout="grid" styleClass="panelgrid-noborder">
+					<p:panelGrid columns="2" layout="grid" styleClass="panelgrid-noborder">
+						<p:panel>
+							<p:outputLabel value="Status" for="status"  /><br />
+							<h:outputText id="status" label="sfsdf" value="#{CAgendamentoBean.agendamento.status.descricao}" readonly="true" />
+						</p:panel>
+						
+						<p:panel>
+							<h:outputText value="Repetir" /><br />
+					        <p:selectBooleanButton id="repetir" value="#{CAgendamentoBean.agendamento.repetir}" onLabel="Sim" offLabel="Não" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px" >
+					            <p:ajax update="@form" listener="#{CAgendamentoBean.addMessage}" />
+					        </p:selectBooleanButton>
+						</p:panel>
+					
+					</p:panelGrid>
+					
+					<p:panel rendered="#{CAgendamentoBean.agendamento.repetir}">
+						<h:outputText value="Repetição" />
+				        <p:selectOneButton value="#{CAgendamentoBean.agendamento.tipoIntervalo}">
+				        	<f:selectItems var="repeticao" itemValue="#{repeticao}" itemLabel="#{repeticao.descricao}" value="#{CAgendamentoBean.comboIntervaloTempo}" />
+				        	<p:ajax update="diaMes" />
+				        </p:selectOneButton>
+					</p:panel>
+								
+					<p:panel>
+						<p:outputLabel value="Lembrete(Descrição)" for="lembrete"  />
+						<p:inputText id="lembrete" value="#{CAgendamentoBean.agendamento.lembrete}" required="true" />
+					</p:panel>
+					
+					<p:panelGrid id="diaMes" columns="2" layout="grid" styleClass="panelgrid-noborder" rendered="#{CAgendamentoBean.agendamento.repetir}" >
+						<p:panel>
+							<p:outputLabel value="Dia" for="diaRealizacao"  />
+							<p:inputText id="diaRealizacao" value="#{CAgendamentoBean.agendamento.diaRealizacao}" required="true" >
+								<f:convertNumber maxFractionDigits="0" />
+								<f:validateLongRange minimum="1" maximum="30" />
+							</p:inputText>
+						</p:panel>
+						
+						<p:panel rendered="#{CAgendamentoBean.agendamento.tipoIntervalo.ordinal == 1}">
+							<p:outputLabel value="Mês" for="mesRealizacao"  />
+							<p:inputText id="mesRealizacao" value="#{CAgendamentoBean.agendamento.mesRealizacao}" required="true">
+								<f:convertNumber maxFractionDigits="0" />
+								<f:validateLongRange minimum="1" maximum="12" />
+							</p:inputText>
+						</p:panel>
+					</p:panelGrid>
+					
+					<p:panel rendered="#{not CAgendamentoBean.agendamento.repetir}">
+						<p:outputLabel value="Agendar p/ dia" for="data"  />
+						<p:inputMask id="data" value="#{CAgendamentoBean.agendamento.data}" mask="99/99/9999" required="true">
+							<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+						</p:inputMask>
+					</p:panel>
+					
+					<p:panel>
+						<p:outputLabel value="Horário:" for="horario"  />
+						<p:inputMask id="horario" value="#{CAgendamentoBean.agendamento.horario}" mask="99:99" />
+					</p:panel>
+					
+					<p:panel>
+						<p:outputLabel value="Cliente" for="pessoa" />
+						<p:autoComplete id="pessoa" size="40" value="#{CAgendamentoBean.agendamento.cliente}" 
+							completeMethod="#{CAgendamentoBean.completarCliente}" converter="pessoaConverter"
+							var="cliente" itemLabel="#{cliente.nome}" itemValue="#{cliente}" forceSelection="true" >
+							<p:column>
+								<h:outputText value="#{cliente.cpf} #{cliente.nome}" />
+							</p:column>										
+						</p:autoComplete>
+					</p:panel>
+					
+					<p:panel>
+						<p:outputLabel value="Dentista" for="dentista" />
+						<p:selectOneMenu id="dentista" value="#{CAgendamentoBean.agendamento.dentista}" converter="dentistaConverter">
+							<f:selectItem itemLabel="Selecione" />
+							<f:selectItems value="#{CAgendamentoBean.listaDentistas}" var="dentista" 
+								itemValue="#{dentista}" itemLabel="#{dentista.nome}" />
+						</p:selectOneMenu>
+					</p:panel>					
+					
+				</p:panelGrid>
+		
+			</div>
+			<p:tabView style="margin-top: 20px">
+				<p:tab title="Observação">
+					<h:panelGroup layout="block" style="padding-right: 10px">
+					<p:inputTextarea rows="5" style="width: 100%" value="#{CAgendamentoBean.agendamento.observacao}" />
+	</h:panelGroup>
+				</p:tab>
+			</p:tabView>
+						
+		</h:form>
+	</ui:define>
+	
+</ui:composition>

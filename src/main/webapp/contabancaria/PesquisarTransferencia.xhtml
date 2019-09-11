@@ -1,0 +1,87 @@
+<ui:composition template="/WEB-INF/template/Layout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Transferências</ui:define>
+    
+    <ui:define name="conteudo">
+    	<h:form id="frmPesquisa">
+	    	<h1 class="ac-titulo-pagina">Transferências</h1>
+	    	
+	    	      		<p:messages autoUpdate="true" closable="true" />
+
+     		
+      		<div class="ui-fluid">
+	      			
+   				<p:panelGrid columns="5" layout="grid" styleClass="panelgrid-noborder">
+   					
+   					<p:panel>
+   						<p:outputLabel value="Data Inicial" for="dataInicial"/>
+	    				<p:calendar pattern="dd/MM/yyyy" id="dataInicial" value="#{CTransferenciaBean.filtro.dataInicial}" size="20">
+	    					<f:convertDateTime locale="pt_BR" timeZone="America/Sao_Paulo" />
+	    					<p:ajax event="dateSelect" />
+	    				</p:calendar>
+   					</p:panel>
+   					
+   					<p:panel>
+   						<p:outputLabel value="Data Final" for="dataFinal"/>
+	    				<p:calendar pattern="dd/MM/yyyy" id="dataFinal" value="#{CTransferenciaBean.filtro.dataFinal}" size="20">
+	    					<f:convertDateTime locale="pt_BR" timeZone="America/Sao_Paulo" />
+	    					<p:ajax event="dateSelect" />
+	    				</p:calendar>
+   					</p:panel>
+   					   					
+   					<p:panelGrid columns="4">
+	   					<p:commandButton value="Pesquisar" action="#{CTransferenciaBean.pesquisar}" update="@form" />
+	   					<p:separator />
+						<p:button value="Nova Transferência" outcome="/contabancaria/Transferencia" />
+   					</p:panelGrid>
+
+   				</p:panelGrid>
+	      		
+      		</div>
+
+
+	    	<p:dataTable id="senhasTable" value="#{CTransferenciaBean.transferenciasFiltradas}" var="item"
+	    		style="margin-top: 20px" emptyMessage="Nenhuma transferência encontrado."
+	    		rows="20" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+	    		
+	    		<p:column headerText="Cód.">
+	    			<h:outputText value="#{item.chaveRegistro}"/>
+	    		</p:column>
+	    		
+	    		<p:column headerText="Data">
+	    			<h:outputText value="#{item.dataLancamento}">
+	    				<f:convertDateTime pattern="dd/MM/yyyy HH:MM" />
+	    			</h:outputText>
+	    		</p:column>
+	    		
+	    		<p:column headerText="Conta de Origem">
+	    			<h:outputText value="#{item.contaOrigem.banco.nome}" />
+	    		</p:column>
+	    		
+	    		<p:column headerText="Conta de Destino">
+	    			<h:outputText value="#{item.contaDestino.banco.nome}" />
+	    		</p:column>
+	    		
+	    		<p:column headerText="Valor Transferido">
+	    			<h:outputText value="R$ " />
+	    			<h:outputText value="#{item.valor}" >
+	    				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+	    			</h:outputText>
+	    		</p:column>
+	    		
+	    		<p:column headerText="Realizado Por:">
+	    			<h:outputText value="#{item.realizadoPor.nome}" />
+	    		</p:column>
+
+	    	</p:dataTable>
+	    	
+
+	    	
+    	</h:form>
+    </ui:define>
+</ui:composition>

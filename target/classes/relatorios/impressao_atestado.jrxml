@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="impressao_atestado" pageWidth="595" pageHeight="842" columnWidth="557" leftMargin="19" rightMargin="19" topMargin="14" bottomMargin="14" uuid="4df6fcd6-d821-419d-91c0-800363701f4d">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.2396694214876032"/>
+	<property name="ireport.x" value="6"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="logotipo" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="usuario" class="java.lang.String" isForPrompting="false"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="chaveRegistro" class="java.lang.Long">
+		<fieldDescription><![CDATA[chaveRegistro]]></fieldDescription>
+	</field>
+	<field name="dataRegistro" class="java.util.Date">
+		<fieldDescription><![CDATA[dataRegistro]]></fieldDescription>
+	</field>
+	<field name="paciente" class="com.agenciacrud.gestornegocio.model.Pessoa">
+		<fieldDescription><![CDATA[paciente]]></fieldDescription>
+	</field>
+	<field name="dentista" class="com.agenciacrud.gestornegocio.model.Dentista">
+		<fieldDescription><![CDATA[dentista]]></fieldDescription>
+	</field>
+	<field name="id" class="java.lang.Long">
+		<fieldDescription><![CDATA[id]]></fieldDescription>
+	</field>
+	<field name="empresa" class="com.agenciacrud.gestornegocio.model.Empresa">
+		<fieldDescription><![CDATA[empresa]]></fieldDescription>
+	</field>
+	<field name="class" class="java.lang.Class">
+		<fieldDescription><![CDATA[class]]></fieldDescription>
+	</field>
+	<field name="descricao" class="java.lang.String">
+		<fieldDescription><![CDATA[descricao]]></fieldDescription>
+	</field>
+	<field name="horaChegada" class="java.lang.String">
+		<fieldDescription><![CDATA[horaChegada]]></fieldDescription>
+	</field>
+	<field name="horaSaida" class="java.lang.String">
+		<fieldDescription><![CDATA[horaSaida]]></fieldDescription>
+	</field>
+	<field name="dataDoAtestado" class="java.util.Date">
+		<fieldDescription><![CDATA[dataDoAtestado]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="108" splitType="Stretch">
+			<textField>
+				<reportElement x="3" y="1" width="400" height="20" uuid="b13d5120-5e23-4ee4-8fc2-9f0762dfeac5"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{empresa}.getNome() + " - " + $F{empresa}.getCpfCnpj()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="160" y="82" width="252" height="22" uuid="927f0cde-1636-47fc-b8ed-1cb74f12d001"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ATESTADO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="3" y="20" width="400" height="20" uuid="2be06cd9-1a03-41ed-96e8-2dc6895d93c1"/>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{empresa}.getEndereco().getLogradouro() +" - " + $F{empresa}.getEndereco().getBairro() +" / " + $F{empresa}.getEndereco().getCidade().getNome() +" - "+ $F{empresa}.getEndereco().getCidade().getUf()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="3" y="34" width="400" height="15" uuid="fa60598a-3d1d-4ea6-af2d-875bb49a92aa"/>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Contato "+$F{empresa}.getTelefone1() +" / " + $F{empresa}.getTelefone2()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="5" y="104" width="549" height="1" uuid="7e683121-07a1-4b5e-8478-dde0267f97d5"/>
+			</line>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="94" splitType="Prevent">
+			<textField>
+				<reportElement positionType="FixRelativeToBottom" x="10" y="21" width="537" height="19" uuid="92e74982-b51c-4dd6-a074-5b35be9217ce"/>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Atesto para os devidos fins que " + $F{paciente}.getNome() + " esteve sob tratamento" ]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="10" y="71" width="510" height="20" uuid="ae090b08-53ad-4d05-8df1-df8f5a940fc9"/>
+				<textElement textAlignment="Left" markup="html">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+			</textField>
+			<textField pattern="d/MM/yyyy">
+				<reportElement positionType="FixRelativeToBottom" x="420" y="40" width="77" height="16" uuid="01ae6326-f5a0-4da2-a910-770f33f1f20d"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataDoAtestado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="FixRelativeToBottom" x="10" y="40" width="460" height="19" uuid="13db1fed-fc7b-4731-985a-f311e76b6f27"/>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["odontológico neste consultório, no período das " + $F{horaChegada} + " até " + $F{horaSaida} +" horas, do dia "]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="481" y="39" width="29" height="18" uuid="8a22572c-bf8c-4e03-821f-c2f2bbf54c3d"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[.]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="92" splitType="Stretch">
+			<textField>
+				<reportElement x="250" y="10" width="297" height="20" uuid="6b7f7523-3c42-4450-946e-11b7380cd3c6"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Dr (a). "+$F{dentista}.getNome()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="250" y="24" width="297" height="18" uuid="0f9d8c0b-c784-4451-8273-e1d9b7ec5d2a"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{dentista}.getEspecialidade()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="250" y="6" width="297" height="1" uuid="6d69e30b-30ea-4a40-a1c1-a5e66ab04d6f"/>
+			</line>
+			<textField>
+				<reportElement x="250" y="37" width="297" height="18" uuid="2fa82f50-f482-49d8-923c-4162cefb656d"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA["CRO "+$F{dentista}.getNumeroConselho()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="staticText-27" x="3" y="70" width="66" height="20" uuid="3835c603-5bd7-4b9c-96c3-79baa1d03321"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Impresso em]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="false">
+				<reportElement key="textField-20" x="70" y="70" width="159" height="20" uuid="a8f1c877-e923-419e-924e-c1c471714862"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="staticText-27" x="440" y="78" width="106" height="12" uuid="8b6f5cd7-a1ba-4c5a-943a-ff48c711d4f5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[www.adminodonto.com]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

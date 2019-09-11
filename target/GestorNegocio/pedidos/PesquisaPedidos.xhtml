@@ -1,0 +1,103 @@
+<ui:composition template="/WEB-INF/template/Layout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Pesquisa de Tratamentos</ui:define>
+    
+    <ui:define name="conteudo">
+    	
+    	<f:metadata>
+			<f:event listener="#{CPedidoBean.pesquisar}" type="preRenderView" />
+		</f:metadata>
+    
+    	<h:form>
+	    	<h1 class="ac-titulo-pagina">Pesquisa de Tratamentos</h1>
+	    	
+	    	<p:toolbar style="margin-top: 20px">
+	    		<p:toolbarGroup align="right">
+	    			<p:button value="Novo" outcome="/pedidos/CadastroPedido" />
+	    			<p:separator/>
+	    			<p:commandButton icon="fa fa-filter" value="Filtrar" action="#{CPedidoBean.pesquisar}"
+	    				update="@form" />
+	    		</p:toolbarGroup>
+	    	</p:toolbar>
+	    	
+	    	<div class="ui-fluid">
+	    		<p:panelGrid columns="4" layout="grid" styleClass="panelgrid-noborder">
+		    		
+		    		<p:panel>
+			    		<p:outputLabel value="Status" />
+			    		<p:selectManyCheckbox value="#{CPedidoBean.filtro.statuses}">
+			    			<f:selectItems value="#{CPedidoBean.statuses}" var="status"
+			    				itemValue="#{status}" itemLabel="#{status.descricao}" />
+			    		</p:selectManyCheckbox>					
+		    		</p:panel>
+		    			    		
+		    		<p:panel>
+			    		<p:outputLabel value="Número" />
+			    		<h:panelGroup>
+			    			<p:inputText size="10" value="#{CPedidoBean.filtro.numeroDe}" />
+			    			a
+			    			<p:inputText size="10" value="#{CPedidoBean.filtro.numeroAte}" />
+			    		</h:panelGroup>
+		    		</p:panel>
+		    		
+		    		<p:panel>
+			    		<p:outputLabel value="Data de criação" />
+			    		<h:panelGroup>
+			    			<p:calendar size="10" pattern="dd/MM/yyyy" 
+			    				value="#{CPedidoBean.filtro.dataCriacaoDe}" />
+			    			a
+			    			<p:calendar size="10" pattern="dd/MM/yyyy"
+			    				value="#{CPedidoBean.filtro.dataCriacaoAte}" />
+			    		</h:panelGroup>
+		    		</p:panel>
+		    		
+		    		<p:panel>
+			    		<p:outputLabel value="Dentista" />
+			    		<p:inputText size="40" value="#{CPedidoBean.filtro.nomeUsuario}" />
+			    		<p:outputLabel value="Paciente" />
+			    		<p:inputText size="40" value="#{CPedidoBean.filtro.nomeCliente}" />
+		    		</p:panel>
+
+		    	</p:panelGrid>
+	    	</div>
+	    	
+	    	<p:dataTable id="pedidosTable" value="#{CPedidoBean.pedidosFiltrados}" var="pedido"
+		    		style="margin-top: 20px" emptyMessage="Nenhum pedido encontrado."
+		    		rows="20" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+	    		<p:column headerText="Número" style="text-align: center; width: 100px">
+	    			<h:outputText value="#{pedido.chaveRegistro}"/>
+	    		</p:column>
+	    		<p:column headerText="Cliente">
+	    			<h:outputText value="#{pedido.pessoa.nome}"/>
+	    		</p:column>
+	    		<p:column headerText="Usuario">
+	    			<h:outputText value="#{pedido.usuario.nome}"/>
+	    		</p:column>
+	    		<p:column headerText="Data de criação" style="text-align: center; width: 140px">
+	    			<h:outputText value="#{pedido.dataCriacao}">
+	    				<f:convertDateTime pattern="dd/MM/yyyy" />
+	    			</h:outputText>
+	    		</p:column>
+	    		<p:column headerText="Valor total" style="text-align: right; width: 120px">
+	    			<h:outputText value="#{pedido.valorTotal}">
+	    				<f:convertNumber type="currency"/>
+	    			</h:outputText>
+	    		</p:column>
+	    		<p:column headerText="Status" style="width: 100px">
+	    			<h:outputText value="#{pedido.status.descricao}"/>
+	    		</p:column>
+	    		<p:column style="text-align: center; width: 50px">
+	    			<p:button icon="ui-icon-pencil" title="Editar" outcome="/pedidos/CadastroPedido">
+	    				<f:param name="pedido" value="#{pedido.chaveRegistro}" />
+	    			</p:button>
+	    		</p:column>
+	    	</p:dataTable>
+	    	
+    	</h:form>
+    </ui:define>
+</ui:composition>

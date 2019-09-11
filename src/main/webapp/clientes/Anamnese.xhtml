@@ -1,0 +1,93 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
+      template="/WEB-INF/template/Layout.xhtml">
+      
+      <ui:define name="conteudo">
+     	<f:metadata>
+			<o:viewParam name="item" value="#{CAnamnesePacienteBean.chaveRegistroEdicao}" />
+			<f:event listener="#{CAnamnesePacienteBean.inicializar}" type="preRenderView" />
+		</f:metadata>
+      	<h1 class="ac-titulo-pagina">#{CAnamnesePacienteBean.editando ? "Editando Anamnese de Paciente" : "Nova Anamnese Paciente"}</h1>
+
+      	<h:form id="frmCadastro">
+      		<p:toolbar>
+      			<p:toolbarGroup>
+      			<p:button value = "Lançar Nova Anamnese" outcome="/clientes/Anamnese"/>
+      				
+      			</p:toolbarGroup>
+      			
+      			<p:toolbarGroup align="right">
+      				<p:commandButton rendered="#{seguranca.liberarMenuEmpresaPlanoMCM}" value = "Salvar" action="#{CAnamnesePacienteBean.salvar}" process="@form @this" update="@form"/>
+      				<p:separator />
+      				<p:button value="Pesquisar Anamneses Realizadas" outcome="/clientes/PesquisaAnamnesesPacientes" />
+      			</p:toolbarGroup>
+      		</p:toolbar>
+      		
+      		<p:messages autoUpdate="true" closable="true"/>
+      		
+      		<div class="ui-fluid">
+      			<p:panelGrid columns="4" layout="grid" styleClass="panelgrid-noborder">
+	      			
+					<p:panel>
+   						<p:outputLabel value="Paciente" for="pessoa"/>
+	    				<p:autoComplete id="pessoa" size="70" converter="pessoaConverter"
+							value="#{CAnamnesePacienteBean.anamnesePaciente.pessoa}" completeMethod="#{CAnamnesePacienteBean.completarPessoa}"
+							var="pessoa" itemLabel="#{pessoa.nome}" itemValue="#{pessoa}" forceSelection="true">
+							<p:ajax event="itemSelect"/>
+							<p:column>
+								<p:outputLabel value="#{pessoa.chaveRegistro} - #{pessoa.nome}" />
+							</p:column>
+							</p:autoComplete>
+   					</p:panel>
+	      			
+	      			<p:panel rendered="#{not CAnamnesePacienteBean.editando}">
+	      				<h:outputText value = "Modelo de Anamnese"/>
+	      				<p:selectOneMenu id="modelo" value="#{CAnamnesePacienteBean.anamneseModelo}" required="true" requiredMessage="Selecione um modelo de anmanese" >
+	      					<f:selectItem itemLabel="Selecione" />
+	      					<f:selectItems  value="#{CAnamnesePacienteBean.listaModelos}" var="modelo" itemValue="#{modelo}" itemLabel="#{modelo.nome}" />
+	      					<p:ajax event="change" listener="#{CAnamnesePacienteBean.selecionaModelo}" update="perguntasTable" />
+	      				</p:selectOneMenu>
+	      			</p:panel>
+      			</p:panelGrid>
+      			    				
+     			
+
+
+				<p:dataTable value="#{CAnamnesePacienteBean.anamnesePaciente.itens}" var="item"   
+					emptyMessage="Nenhum item encontrado" rowIndexVar="linha" scrollable="true"
+					style="margin-top: 10px" id="perguntasTable" >
+					
+					<p:column headerText="Ordem" style="text-align:center; width: 100px;">
+						<h:outputText value="#{item.ordem}" />
+					</p:column>
+								
+					<p:column headerText="Pergunta" >
+						<h:outputText value="#{item.pergunta}" />
+					</p:column>
+					
+					<p:column headerText="Resposta" style="text-align:center; width: 150px;">
+						<p:selectOneRadio value="#{item.resposta}" required="true" requiredMessage="Todas as respostas são obrigatórias">
+							<f:selectItem itemLabel="Sim" itemValue="SIM" />
+							<f:selectItem itemLabel="Não" itemValue="NAO"/>
+							<p:ajax event="change" />
+						</p:selectOneRadio>
+					</p:column>
+					
+					<p:column headerText="Observação">
+						<p:inputText value="#{item.observacao}">
+							<p:ajax event="change" />
+						</p:inputText>
+					</p:column>
+	
+				</p:dataTable>
+				
+      		</div>			
+
+      	</h:form>
+      </ui:define>
+      
+</ui:composition>

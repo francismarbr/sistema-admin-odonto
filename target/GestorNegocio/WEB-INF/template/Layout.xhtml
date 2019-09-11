@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sec="http://www.springframework.org/security/tags">
+
+	<h:head>
+        <f:facet name="first">
+        	<meta charset="UTF-8" />
+        	<meta name="viewport" content="width=device-width, initial-scale=1" />
+        </f:facet>
+        <h:outputScript library="js" name="jquery.maskMoney.js"/>
+        <h:outputStylesheet library="css" name="custom.css" />
+		<h:outputStylesheet library="css" name="layout.css" />
+		<h:outputStylesheet library="css" name="componentes.css" />
+		
+		<h:outputScript target="body" library="primefaces" name="jquery/jquery.js" />
+		<h:outputScript target="body" library="js" name="app.js" />
+		
+		<title>Admin Odonto</title>
+	</h:head>
+
+	<h:body>
+		
+		<p:ajaxStatus styleClass="ajax-status">
+			<f:facet name="start">
+			 <p:graphicImage library="images" name="loading.gif" />
+			</f:facet>
+			<f:facet name="complete">
+				<h:outputText value=""/>
+			</f:facet>
+		</p:ajaxStatus>
+		
+		<header class="ac-barratopo">
+			<h:graphicImage library="images" name="logo.png" />
+			<a href="#" class="ac-alternar js-alternar"><i class="fa  fa-bars"></i></a>
+			<span class="caixa-config">
+			<h:form id="frm1">
+			<p:menubar styleClass="menuBarConfig">
+				 <p:submenu  label="Configurações"  icon="fa fa-fw fa-cog"> 
+				 	<p:menuitem value="Meu Consultório" outcome="/empresa/ConsultaEmpresa" styleClass="detalheItem"/>
+			        <p:menuitem value="Usuários" outcome="/usuarios/PesquisaUsuario" styleClass="detalheItem" />
+			        <p:menuitem rendered="#{seguranca.liberarMenuEmpresaPlanoMCM}" value="Perfil de Acesso" outcome="/perfilacesso/PerfilAcesso" styleClass="detalheItem" />
+			        <p:menuitem rendered="#{seguranca.liberarMenuEmpresaPlanoMaster}" value="Permissões" outcome="/perfilacesso/PesquisaPermissao" styleClass="detalheItem" />
+			        <p:menuitem value="Dentistas" outcome="/dentistas/PesquisaDentista" styleClass="detalheItem" />
+			        <p:menuitem rendered="#{seguranca.liberarMenuEmpresaPlanoMaster}" value="Unidade de Medida" outcome="/unidademedida/PesquisaUnidadeMedida" styleClass="detalheItem" />
+			        <p:separator />
+					<p:menuitem value="Formas de Pagamento" styleClass="detalheItem" outcome="/formapagamento/PesquisaFormaPagamento" />
+					<p:menuitem value="Banco" outcome="/banco/PesquisaBanco" styleClass="detalheItem" />
+					<p:menuitem value="Conta Bancária" styleClass="detalheItem" outcome="/contabancaria/PesquisaContaBancaria" />
+					<p:menuitem value="Categoria de Contas" outcome="/categoriacontas/PesquisaCategoriaContas" styleClass="detalheItem" />
+					<p:separator />
+					<p:menuitem value="Categoria de Proced." outcome="/categoriasprocedimentos/PesquisaCategoriaProcedimentos" styleClass="detalheItem" />
+					<p:menuitem value="Serviços / Procedimentos" outcome="/procedimentos/PesquisaProcedimentos" styleClass="detalheItem" />
+					<p:menuitem rendered="#{seguranca.liberarMenuEmpresaPlanoMCM}" value="Modelo de Anamnese" outcome="/modeloanamnese/ModeloAnamnese" styleClass="detalheItem" />
+					<p:separator />
+					<p:menuitem value="Fornecedores" outcome="/fornecedores/PesquisaFornecedor"  styleClass="detalheItem"/>				
+					
+					<p:separator />
+					<p:menuitem value="Sair do Sistema"  url="/logout" styleClass="detalheItem" />
+		        </p:submenu>
+			</p:menubar>
+			</h:form>
+			</span>
+			<!-- <span class="nome-usuario">
+				<a href="#" onclick="PF('alterarSenhaDialog').show(); return false">Olá #{seguranca.nomeUsuario}!</a>
+			</span> -->
+			
+			
+		</header>
+		
+		<aside class="ac-barralateral js-barralateral">
+			<nav class="ac-menu">
+				<ul>
+					<li  class="selecionado">
+						<h:link outcome="/home.xhtml"><i class="fa fa-fw fa-home"></i>Dashboard</h:link>
+					</li>
+					
+					<li>
+						<h:link outcome="/agendamento/ConsultarAgenda"><b><i class="fa fa-fw fa-calendar"></i> Agenda</b></h:link>
+					</li>
+
+				</ul>
+			</nav>
+			<h:form>
+						 
+			    <p:panelMenu style="width:300px">
+			    	<p:submenu label="Consultórios" rendered="#{seguranca.liberarMenuEmpresaPlanoMaster}" >
+						<p:menuitem value="Clientes"  outcome="/ClientesAdminOdonto/ConsultaCliAdminOdonto" />
+					</p:submenu>
+			    	 <p:submenu label="Pacientes" >
+						<p:menuitem value="Clientes"  outcome="/clientes/PesquisaCliente" />
+			        	<p:menuitem rendered="#{seguranca.liberarMenuEmpresaPlanoMCM}" value="Anamnese" outcome="/clientes/Anamnese" />
+			        	<p:menuitem rendered="#{seguranca.liberarMenuEmpresaPlanoMCM}" value="Receita Médica" outcome="/receitasatestados/CadastroReceitaMedica" />
+			        	<p:menuitem rendered="#{seguranca.liberarMenuEmpresaPlanoMCM}" value="Atestado" outcome="/receitasatestados/Atestado" />						
+			        </p:submenu>
+			    	
+			        <p:submenu label="Estoque" rendered="#{seguranca.liberarMenuEmpresaPlanoMCM}">
+						<p:menuitem value="Produtos" outcome="/produtos/CadastroProduto" />
+						<p:menuitem value="Movimentação" outcome="/movimentacaoestoque/Movimentacao"  />					
+			        </p:submenu>
+			        			        
+			        <p:submenu label="Tratamentos">
+			        	<p:menuitem value="Lançar Novo" outcome="/pedidos/CadastroPedido" />
+			            <p:menuitem value="Consultar Tratamentos" outcome="/pedidos/PesquisaPedidos" />
+			            
+			        </p:submenu>
+			        			        	
+			         <p:submenu label="Financeiro">
+			         	<p:menuitem value="Contas a Receber" outcome="/receita/PesquisaReceita"/>
+			            <p:menuitem value="Contas a Pagar" outcome="/despesa/PesquisaDespesa"/>
+						<p:menuitem value="Baixar Contas" outcome="/contas/Baixar"/>
+						<p:menuitem value="Transferência" outcome="/contabancaria/Transferencia" />
+			        </p:submenu>
+			        
+			        <p:submenu label="Relatórios">
+			            <p:menuitem value="Pessoas" outcome="/relatorios/relatorioPessoa"/>
+			            <p:menuitem value="Receitas" outcome="/relatorios/relatorioReceita"/>
+			             <p:menuitem value="Comissões" outcome="/relatorios/relatorioComissao"/>
+			            <p:menuitem value="Despesas" outcome="/relatorios/relatorioDespesa"/>
+						<p:menuitem value="Contas a Pagar/Receber" outcome="/relatorios/relatorioContasPagarReceber"/>
+						<p:menuitem value="Fluxo Caixa Detalhado" outcome="/relatorios/relatorioRecebimentosPagamentos"/>
+						<p:menuitem value="Extrato Conta" outcome="/relatorios/relatorioExtratoConta"/>
+						<p:menuitem />
+						<p:menuitem />
+						<p:menuitem />
+						<p:menuitem />
+			        </p:submenu>
+			        
+			    </p:panelMenu>
+			    
+			     <p:dialog widgetVar="alterarSenhaDialog" modal="true" header="Alteração de Senha" id="alterarSenhaDialog"
+			 		resizable="false" responsive="true">
+			 		
+			 		<p:messages autoUpdate="true" closable="true" />
+			 		
+			    	<h:panelGroup layout="block" styleClass="ui-fluid">	      			
+	   					<p:panelGrid columns="1" layout="grid"	styleClass="panelgrid-noborder">
+		   					<p:panel>
+		   						<p:outputLabel value="Nome" for ="nome"/>
+								<p:inputText id="nome" readonly="true" value="#{CUsuarioBean.usuarioLogado.usuario.nome}" />
+		   					</p:panel>
+		   					
+		   					<p:panel>
+		   						<p:outputLabel value="Login" for ="login" required="true"/>
+								<p:inputText id="login" readonly="true" value="#{CUsuarioBean.usuarioLogado.usuario.login}" />
+		   					</p:panel>
+		   					
+		   					<p:panel>
+			   					<p:outputLabel value="Email" for ="email" required="true"/>
+								<p:inputText id="email" readonly="true" value="#{CUsuarioBean.usuarioLogado.usuario.email}" />
+		   					</p:panel>
+		   					
+		   					<p:panel>
+			   					<p:outputLabel value="Nova Senha" for ="senha"/>
+								<p:password id="senha" size="10" maxlength="8" feedback="false" required="true" requiredMessage="O campo senha deve ser preenchido"
+									weakLabel="Fraca" goodLabel="Boa" strongLabel="Forte" promptLabel="Informe uma senha" match="confirmacaoSenha" 
+									value="#{CUsuarioBean.novaSenha}" />
+		   					</p:panel>
+		   					
+		   					<p:panel>
+			   					<p:outputLabel value="Confirme a senha" for="confirmacaoSenha" />
+								<p:password id="confirmacaoSenha" />
+		   					</p:panel>
+		   					
+	   					</p:panelGrid>
+   					</h:panelGroup>
+   					
+   					<p:commandButton value="Sim, desejo alterar minha senha." oncomplete="PF('alterarSenhaDialog').show(); return false"
+   						action="#{CUsuarioBean.alterarSenha}"/>
+			    </p:dialog>
+			    
+			</h:form>
+		</aside>
+		
+		<section class="ac-conteudo js-conteudo">
+			<span class="nome-usuario" >
+				<h:form>
+					<h:link outcome="/ajuda/pesquisa.xhtml"><i class="fa fa-info-circle"></i> Dúvidas? Comece por aqui.</h:link>
+				</h:form>
+			</span>
+			<span class="nome-usuario" >
+				<a href="#" onclick="PF('alterarSenhaDialog').show(); return false">Olá #{seguranca.nomeUsuario}!</a>
+			</span>
+			
+			<ui:insert name="conteudo" />
+		</section>
+		
+	</h:body>
+
+</html>

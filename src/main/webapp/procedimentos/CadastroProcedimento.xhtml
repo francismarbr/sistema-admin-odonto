@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
+      template="/WEB-INF/template/Layout.xhtml">
+      
+      <ui:define name="titulo">#{CProcedimentoBean.editando ? 'Edição de Servico' : 'Novo Servico'}</ui:define>
+      
+      <ui:define name="conteudo">
+      
+      	<f:metadata>
+			<o:viewParam name="procedimento" value="#{CProcedimentoBean.chaveRegistroEdicao}" />
+			<f:event listener="#{CProcedimentoBean.inicializar}" type="preRenderView" />
+		</f:metadata>
+      
+      	<h:form id="frm">
+      	
+      		<h1 class="ac-titulo-pagina">#{CProcedimentoBean.editando ? 'Edição de Procedimento' : 'Novo Procedimento'}</h1>
+      	
+      		<p:messages autoUpdate="true" closable="true" />
+      		
+      		<p:toolbar>
+      			<p:toolbarGroup>
+      				<p:button value="Novo" outcome="/procedimentos/CadastroProcedimento" />
+      			</p:toolbarGroup>
+      			
+      			<p:toolbarGroup align="right">
+      				<p:commandButton value="Salvar" id="botaoSalvar" action="#{CProcedimentoBean.salvar}" update="@form" />
+      				<p:separator />
+      				<p:button value="Pesquisar" outcome="/procedimentos/PesquisaProcedimentos" />
+      			</p:toolbarGroup>
+      		</p:toolbar>
+      		
+      		<div class="ui-fluid">
+	      			
+   				<p:panelGrid columns="4" layout="grid"
+   						styleClass="panelgrid-noborder">
+   					<p:panel rendered="#{CProcedimentoBean.editando}">
+   						<p:outputLabel value="Código" for ="id" rendered="#{CProcedimentoBean.editando}" />
+   						<p:inputText id="id" size="20" value="#{CProcedimentoBean.procedimento.chaveRegistro}" readonly="true" rendered="#{CProcedimentoBean.editando}"/>
+   					</p:panel>
+   					
+   					<p:panel>
+   						<p:outputLabel value="Nome" for ="nome"/>
+						<p:inputText id="nome" size="50" maxlength="80" value="#{CProcedimentoBean.procedimento.nome}" />
+   					</p:panel>
+   					
+   					<p:panel>
+   						<p:outputLabel value="Categoria" for ="categoria"/>
+						<p:selectOneMenu id="categoria" value="#{CProcedimentoBean.procedimento.categoria}" converter="categoriaProcedimentoConverter">
+							<f:selectItem itemLabel="Selecione" />
+							<f:selectItems value="#{CProcedimentoBean.categoriasRaizes}" var="categoria"
+								itemValue="#{categoria}" itemLabel="#{categoria.nome}" />
+							
+						</p:selectOneMenu>
+   					</p:panel>
+
+   					
+   					<p:panel>
+	   					<p:outputLabel value="Valor" for ="valor"/>
+						<p:inputText id="valor" size="10" maxlength="10" styleClass="moeda" 
+							value="#{CProcedimentoBean.procedimento.valorUnitario}">
+							<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+						</p:inputText>
+   					</p:panel>
+   				 					
+   				
+   				</p:panelGrid>
+	      		
+      		</div>
+      		
+      	</h:form>
+      </ui:define>
+      
+</ui:composition>

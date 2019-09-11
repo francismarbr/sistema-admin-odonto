@@ -1,0 +1,74 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<div class="ui-fluid">
+		<p:panelGrid id="dadosBasicos" columns="4" layout="grid" styleClass="panelgrid-noborder">
+			
+			<p:panelGrid columns="3" layout="grid" styleClass="panelgrid-noborder">
+				
+				<p:panel rendered="#{CPedidoBean.pedido.existente}">
+					<p:outputLabel value="Cód." /> <br />
+					<h:outputText value="#{CPedidoBean.pedido.chaveRegistro}" rendered="#{CPedidoBean.pedido.existente}" />
+				</p:panel>
+				
+				<p:panel>
+					<p:outputLabel value="Data" /><br />
+					<h:outputText value="#{CPedidoBean.pedido.dataCriacao}" >
+						<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+					</h:outputText>
+				</p:panel>
+				
+				<p:panel>
+					<p:outputLabel value="Status" /><br />
+					<h:outputText value="#{CPedidoBean.pedido.status.descricao}" />
+				</p:panel>
+				
+			</p:panelGrid>
+						
+			<p:panel>
+				<p:outputLabel value="Dentista" for="dentista" />
+				<p:selectOneMenu id="dentista" value="#{CPedidoBean.pedido.dentista}" converter="dentistaConverter" disabled="#{CPedidoBean.pedido.naoAlteravel}">
+					<f:selectItem itemLabel="Selecione" />
+					<f:selectItems value="#{CPedidoBean.listaDentistas}" var="dentista" 
+						itemValue="#{dentista}" itemLabel="#{dentista.nome}" />
+				</p:selectOneMenu>
+			</p:panel>
+			
+			<p:panel>
+				<p:outputLabel value="Cliente" for="pessoa" />
+				<p:autoComplete id="pessoa" size="40" dropdown="false" converter="pessoaConverter"
+					value="#{CPedidoBean.pedido.pessoa}" completeMethod="#{CPedidoBean.completarCliente}"
+					var="pessoa" itemLabel="#{pessoa.nome}" itemValue="#{pessoa}" forceSelection="true"
+					disabled="#{CPedidoBean.pedido.naoAlteravel}">
+					<p:column>
+						<h:outputText value="#{pessoa.cpf} #{pessoa.nome}" />
+					</p:column>										
+				</p:autoComplete>
+			</p:panel>
+				        
+	        <p:panelGrid columns="2" layout="grid" styleClass="panelgrid-noborder">
+		        <p:panel>
+					<p:outputLabel value="Subtotal" style="font-weight: bold" /><br />
+					<h:outputText value="#{CPedidoBean.pedido.valorSubtotal}" style="font-weight: bold" id="subtotal">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</p:panel>
+		        
+		        <p:panel>
+			        <p:outputLabel value="Total" style="font-weight: bold; font-size: 1.1em"/><br />
+			        <h:outputText value="#{CPedidoBean.pedido.valorTotal}" 
+			        	style="font-weight: bold; font-size: 1.1em" id="totalPedido">
+			        	<f:convertNumber type="currency" />
+			        </h:outputText>
+		        </p:panel>
+	        </p:panelGrid>
+
+        
+        </p:panelGrid>
+        	
+	</div>
+
+</ui:composition>

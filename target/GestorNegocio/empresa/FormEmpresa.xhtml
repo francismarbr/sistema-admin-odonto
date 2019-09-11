@@ -1,0 +1,274 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
+      template="/WEB-INF/template/Layout.xhtml">
+      
+      <ui:define name="conteudo">
+      	<h1 class="ac-titulo-pagina">#{CEmpresaBean.editando ? 'Minha Empresa' : 'Minha Empresa'}</h1>
+      	
+		<f:metadata>
+			<o:viewParam name="empresa" value="#{CEmpresaBean.chaveRegistroEdicao}"  />
+			<f:event listener="#{CEmpresaBean.inicializar}" type="preRenderView" />
+		</f:metadata>
+      	
+      	<h:form id="frm">
+      		<p:toolbar>
+      			<p:toolbarGroup>
+      			
+      				
+      			</p:toolbarGroup>
+      			
+      			<p:toolbarGroup align="right">
+      				<p:commandButton value = "Salvar" rendered="#{CEmpresaBean.empresaCriada}" action="#{CEmpresaBean.salvar}" process="tabView @this" update="@form"/>
+      				<p:separator />
+      				<p:button value="Pesquisar" outcome="/empresa/ConsultaEmpresa" />
+      			</p:toolbarGroup>
+      		</p:toolbar>
+      		
+      		<p:messages autoUpdate="false" closable="true"/>
+      		
+      		<div class="ui-fluid">
+	      		<p:tabView style="margin-top: 20px" id="tabView">
+	      			<p:tab title="Dados básicos">
+	      				<p:panelGrid id="dadosBasicos" columns="4" layout="grid"
+	      						styleClass="panelgrid-noborder">
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Cód. Empresa" for="codigo" />
+		      					<p:inputText id="codigo" readonly="true" value="#{CEmpresaBean.empresa.id}" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+	      						<p:outputLabel value="Tipo" for="tipo" />
+								<p:selectOneRadio id="tipo" value="#{CEmpresaBean.empresa.tipo}" required="true">
+									<f:selectItems value="#{CEmpresaBean.comboTipoPessoa}" />
+									<p:ajax event="change" update="frm" />
+								</p:selectOneRadio>
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Nome" for="nome" rendered="#{CEmpresaBean.empresa.tipo.codigo == 0}"/>
+		      					<p:outputLabel value="Razão Social" for="nome" rendered="#{CEmpresaBean.empresa.tipo.codigo == 1}"/>
+		      					<p:inputText id="nome" required="true" value="#{CEmpresaBean.empresa.nome}" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Nome Usual" for="nomeFantasia" rendered="#{CEmpresaBean.empresa.tipo.codigo == 0}" />
+		      					<p:outputLabel value="Nome Fantasia" for="nomeFantasia" rendered="#{CEmpresaBean.empresa.tipo.codigo == 1}" />
+		      					<p:inputText id="nomeFantasia" required="true" value="#{CEmpresaBean.empresa.nomeFantasia}" />
+	      					</p:panel>
+	      						      	
+	      					<p:panel>
+	      						<p:outputLabel value="CPF" for="cpf" rendered="#{CEmpresaBean.empresa.tipo.codigo == 0}" />
+		      					<p:outputLabel value="CNPJ" for="cpfCnpj" rendered="#{CEmpresaBean.empresa.tipo.codigo == 1}" />
+		      					<p:inputMask id="cpf"  mask="999.999.999-99" value="#{CEmpresaBean.empresa.cpfCnpj}" rendered="#{CEmpresaBean.empresa.tipo.codigo == 0}" />
+		      					<p:inputMask id="cpfCnpj"  mask="99.999.999/9999-99" value="#{CEmpresaBean.empresa.cpfCnpj}" rendered="#{CEmpresaBean.empresa.tipo.codigo == 1}" />
+	      					</p:panel>
+	      					
+	      					<p:panel rendered="#{CEmpresaBean.empresa.tipo.codigo == 1}">
+		      					<p:outputLabel value="CEI" for="cei" />
+		      					<p:inputMask id="cei" mask="99.9999999.99-99" value="#{CEmpresaBean.empresa.cei}" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="RG" for="rgInscEstadual" rendered="#{CEmpresaBean.empresa.tipo.codigo == 0}" />
+		      					<p:outputLabel value="Insc. Estadual" for="rgInscEstadual" rendered="#{CEmpresaBean.empresa.tipo.codigo == 1}" />
+		      					<p:inputMask id="rgInscEstadual"  value="#{CEmpresaBean.empresa.rgInscEstadual}" />
+	      					</p:panel>
+	      					
+	      					<p:panel rendered="#{CEmpresaBean.empresa.tipo.codigo == 1}">
+		      					<p:outputLabel value="Inscrição Municipal" for="inscMunicipal" />
+		      					<p:inputMask id="inscMunicipal"  value="#{CEmpresaBean.empresa.inscMunicipal}" />
+	      					</p:panel>
+	      						      					
+	      					<p:panel>
+		      					<p:outputLabel value="Telefone 1" for="telefone1" />
+		      					<p:inputMask id="telefone1" required="true" value="#{CEmpresaBean.empresa.telefone1}" mask="(99) 9999-9999?9" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Telefone 2" for="telefone2" />
+		      					<p:inputMask id="telefone2" value="#{CEmpresaBean.empresa.telefone2}" mask="(99) 9999-9999?9" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+	      						<p:outputLabel value="Email" for="email"/>
+	      						<p:inputText id="email" value="#{CEmpresaBean.empresa.email}" />
+	      					</p:panel>
+
+
+
+	      				
+	      				</p:panelGrid>
+	      				
+	      				<p:panel id="toggleable" collapsed="true" header="Endereço" toggleable="true" toggleSpeed="500" closeSpeed="500" widgetVar="panel">
+ 					 
+ 					 		<p:panelGrid columns="4" layout="grid" styleClass="panelgrid-noborder">
+					         	<p:panel>
+									<p:outputLabel value="Logradouro" for="logradouro" />
+									<p:inputText id="logradouro" value="#{CEmpresaBean.empresa.endereco.logradouro}" /> 
+								</p:panel>
+								
+								<p:panel>				
+									<p:outputLabel value="Número" for="numeroEndereco" />
+									<p:inputText id="numeroEndereco" value="#{CEmpresaBean.empresa.endereco.numero}" />
+								</p:panel>
+								
+								<p:panel>							
+									<p:outputLabel value="Bairro" for="bairro" />
+									<p:inputText id="bairro" value="#{CEmpresaBean.empresa.endereco.bairro}" />
+								</p:panel>
+								
+								<p:panel>
+									<p:outputLabel value="Complemento" for="complemento" />
+									<p:inputText id="complemento" value="#{CEmpresaBean.empresa.endereco.complemento}" />
+								</p:panel>
+								
+								<p:panel>
+									<p:outputLabel value="UF" for="uf" />
+									<p:selectOneMenu id="uf" value="#{CEmpresaBean.filtro.uf}">
+										<f:selectItems value="#{CEmpresaBean.comboUFSigla}" />
+										<p:ajax event="change" listener="#{CEmpresaBean.obterCidades}" update="cidade" />
+									</p:selectOneMenu>
+								</p:panel>
+								
+								<p:panel>
+									<p:outputLabel value="Cidade" for="cidade" />
+									<p:selectOneMenu id = "cidade" value="#{CEmpresaBean.empresa.endereco.cidade}">
+										<f:selectItems var="cidade" itemLabel="#{cidade.nome}" itemValue="#{cidade}" 
+											value="#{CEmpresaBean.listaCidades}" />
+											<p:ajax event="change" />
+									</p:selectOneMenu>
+								</p:panel>
+								
+								<p:panel>
+									<p:outputLabel value="CEP" for="cep" />
+									<p:inputMask id="cep" value="#{CEmpresaBean.empresa.endereco.cep}" />
+								</p:panel>
+								
+								
+					 
+							</p:panelGrid>
+					    </p:panel>
+	      				
+	      			</p:tab>
+	      			
+	      			<p:tab id="socios" title="Sócios" rendered="false">
+	      				
+	      				<!-- rendered="#{CEmpresaBean.empresa.tipo.codigo == 1}" -->
+	      				
+	      				<p:button value="Adicionar Sócio" style="margin-top: 20px"
+							onclick="PF('novoSocioDialog').show(); return false" />
+
+
+						<p:dataTable var="socio"  value="#{CEmpresaBean.empresa.socios}"   
+							emptyMessage="Nenhum sócio cadastrado"
+							style="margin-top: 10px" id="socioTable">
+					
+							<p:column headerText="Nome do Sócio">
+								<p:inputText value="#{socio.nome}" />
+							</p:column>
+					
+							<p:column headerText="Data de Entrada">
+								<p:inputMask mask="99/99/9999" value="#{socio.dataEntrada}">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+								</p:inputMask>
+							</p:column>
+					
+							<p:column headerText="Data de Saída">
+								<p:inputMask mask="99/99/9999" value="#{socio.dataSaida}" >
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+								</p:inputMask>
+							</p:column>
+					
+							<p:column headerText="Telefone">
+								<p:inputMask mask="(99) 99999-9999" value="#{socio.telefone}" />
+							</p:column>
+
+					
+							<p:column style="text-align: center; width: 70px">
+								<p:commandButton icon="ui-icon-trash" process="@this" title="Excluir"
+									oncomplete="PF('excluirSocio').show()" update=":frm:excluirSocioDialog">
+									<f:setPropertyActionListener
+										target="#{CEmpresaBean.socio}" value="#{socio}" />
+								</p:commandButton>
+					
+							</p:column>
+							
+							
+					
+						</p:dataTable>
+	      				
+	      			</p:tab>
+	      			
+	      		</p:tabView>
+	      
+      		</div>
+      		
+      			<p:dialog widgetVar="novoSocioDialog" header="Novo Sócio" id="novoSocioDialog"
+					 resizable="false" responsive="true">
+			
+					<h:panelGroup id="novoSocioPanel" layout="block" styleClass="ui-fluid">
+			
+						<p:messages autoUpdate="false" closable="true" />
+			
+						<p:panelGrid columns="2" layout="grid" styleClass="panelgrid-noborder">
+							
+							<p:panel>
+								<p:outputLabel value="Nome" for="nome" />
+								<p:inputText id="nome" value="#{CEmpresaBean.socio.nome}" /> 
+							</p:panel>
+							
+							<p:panel>				
+								<p:outputLabel value="Data de Entrada" for="dataEntrada" />
+								<p:inputMask mask="99/99/9999" id="dataEntrada" value="#{CEmpresaBean.socio.dataEntrada}">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+								</p:inputMask>
+							</p:panel>
+							
+							<p:panel>				
+								<p:outputLabel value="Data de Saída" for="dataSaida" />
+								<p:inputMask mask="99/99/9999" id="dataSaida" value="#{CEmpresaBean.socio.dataSaida}">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+								</p:inputMask>
+							</p:panel>
+							
+							<p:panel>
+								<p:outputLabel value="Telefone" for="telefone" />
+								<p:inputMask id="telefone" value="#{CEmpresaBean.socio.telefone}" mask="(99) 9999-9999?9" />
+							</p:panel>
+							
+						</p:panelGrid>
+			
+						<p:commandButton value="Adicionar"
+							action="#{CEmpresaBean.adicionarSocio}" id="adicionar"
+							update="tabView:socioTable novoSocioPanel"
+							process="novoSocioDialog" />
+			
+					</h:panelGroup>
+				</p:dialog>
+				
+			
+				
+			
+				<p:confirmDialog header="Excluir Socio"
+					message="Deseja excluir remover este sócio?"
+					widgetVar="excluirSocio" id="excluirSocioDialog">
+			
+					<p:commandButton value="Sim"
+						oncomplete="PF('excluirSocio').hide()"
+						action="#{CEmpresaBean.removerSocio}" process="@this"
+						update="tabView:socioTable" />
+					<p:button value="Não"
+						onclick="PF('excluirSocio').hide(); return false;" />
+			
+				</p:confirmDialog>
+
+      		
+      	</h:form>
+      </ui:define>
+      
+</ui:composition>

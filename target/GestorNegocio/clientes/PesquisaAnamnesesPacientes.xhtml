@@ -1,0 +1,92 @@
+<ui:composition template="/WEB-INF/template/Layout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Pesquisa Anamneses de Pacientes</ui:define>
+    
+    <ui:define name="conteudo">
+    	<f:metadata>
+    		<f:event listener="#{CAnamnesePacienteBean.inicializar}" type="preRenderView" />
+		</f:metadata>
+    	<h1 class="ac-titulo-pagina" >Pesquisa Anamneses de Pacientes</h1>
+    	<h:form id="frmPesquisa">
+	    	<div class="ui-fluid">
+	    	<p:panelGrid columns="4" layout="grid" styleClass="panelgrid-noborder">
+	      			
+					<p:panel>
+   						<p:outputLabel value="Paciente" for="pessoa"/>
+	    				<p:autoComplete id="pessoa"  converter="pessoaConverter"
+							value="#{CAnamnesePacienteBean.anamnesePaciente.pessoa}" completeMethod="#{CAnamnesePacienteBean.completarPessoa}"
+							var="pessoa" itemLabel="#{pessoa.nome}" itemValue="#{pessoa}" forceSelection="true">
+							<p:ajax event="itemSelect"/>
+							<p:column>
+								<p:outputLabel value="#{pessoa.chaveRegistro} - #{pessoa.nome}" />
+							</p:column>
+							</p:autoComplete>
+   					</p:panel>
+	      			
+	      			<p:panel>
+   						<p:outputLabel value="Período de" for="de"/>
+	    				<p:inputMask id="de" mask="99/99/9999"  value="#{CAnamnesePacienteBean.dataInicioRegistro}">
+	    					<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+	    				</p:inputMask>
+   					</p:panel>
+   					
+   					<p:panel>
+   						<h:outputText value="até" for="ate"/>
+   						<h:panelGrid columns="3" >
+		    				<p:inputMask  id="ate" mask="99/99/9999" value="#{CAnamnesePacienteBean.dataFinalRegistro}">
+		    					<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+	    					</p:inputMask>
+		    				<p:commandButton value="Filtrar" action="#{CAnamnesePacienteBean.pesquisar}" update="anamnesesPacientesTable" />
+	    				</h:panelGrid>
+   					</p:panel>
+   					<p:panel><br />
+   						<p:button value="Nova Anamnese" outcome="/clientes/Anamnese" />
+   					</p:panel>
+      			</p:panelGrid>
+      			</div>
+
+	    	
+	    	<p:dataTable id="anamnesesPacientesTable" value="#{CAnamnesePacienteBean.listaAnamnesesPacientes}" var="item"
+		    		style="margin-top: 20px" emptyMessage="Nenhum registro encontrado."
+		    		rows="20" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+	    		
+	    		<p:column headerText="Data da Anamnese" style="width: 150px;">
+	    			<h:outputText value="#{item.dataRegistro}">
+	    				<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+	    			</h:outputText>
+	    		</p:column>
+	    		
+	    		<p:column headerText="Nome do Paciente">
+	    			<h:outputText value="#{item.pessoa.nome}"/>
+	    		</p:column>
+	    		
+	    		<p:column style="text-align: center; width: 250px">
+	    			<p:button icon="ui-icon-pencil" title="Editar" outcome="/clientes/Anamnese">
+	    				<f:param name="item" value="#{item.chaveRegistro}" />
+	    			</p:button>
+	    			<p:commandButton icon="ui-icon-trash" title="Excluir" oncomplete="PF('confirmacaoExclusao').show()"
+	    				process="@this" update=":frmPesquisa:confirmacaoExclusaoDialog">
+	    				<f:setPropertyActionListener value="#{item}" target="#{CAnamnesePacienteBean.anamneseSelecionada}" />
+	    			</p:commandButton>
+	    			
+	    			<p:commandButton value="Imprimir" action="#{CImpressaoAnamnese.gerarRelatorio(item)}" ajax="false" />
+	    			
+	    		</p:column>
+	    	</p:dataTable>
+	    	
+	    	<p:confirmDialog header="Exclusão de Modelo" message="Tem certeza que deseja excluir a anamnese do(a) #{CAnamnesePacienteBean.anamnesePaciente.pessoa.nome}?"
+	    		widgetVar="confirmacaoExclusao" id="confirmacaoExclusaoDialog">
+	    		<p:button value="Não" onclick="PF('confirmacaoExclusao').hide(); return false;" />
+	    		<p:commandButton value="Sim" oncomplete="PF('confirmacaoExclusao').hide();"
+	    			action="#{CAnamnesePacienteBean.excluir}" process="@this" update=":frmPesquisa:anamnesesPacientesTable" />
+	    	</p:confirmDialog>
+
+	    	
+    	</h:form>
+    </ui:define>
+</ui:composition>

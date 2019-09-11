@@ -1,0 +1,186 @@
+<ui:composition template="/WEB-INF/template/Layout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Agendamentos</ui:define>
+    
+    <ui:define name="conteudo">
+    
+   	 	<f:metadata>
+			<f:event listener="#{CAgendamentoBean.inicializar}" type="preRenderView" />
+		</f:metadata>
+    
+    	<h:form id="frmPesquisa">
+	    	<h1 class="ac-titulo-pagina">Agendamentos</h1>
+	    	
+ 	      	<p:messages autoUpdate="true" closable="true" />
+
+     		
+      		<div class="ui-fluid">
+	      			
+   				<p:panelGrid columns="5" layout="grid" styleClass="panelgrid-noborder">
+   					  					   					   					
+   					<p:panel>
+   						<p:outputLabel value="Cliente" for="pessoa"/>
+	    				<p:autoComplete id="pessoa" size="70" converter="pessoaConverter"
+								value="#{CAgendamentoBean.filtro.pessoa}" completeMethod="#{CAgendamentoBean.completarPessoa}"
+								var="pessoa" itemLabel="#{pessoa.nome}" itemValue="#{pessoa}" forceSelection="true" >
+							<p:column>
+								<h:outputText value="#{pessoa.cpf} #{pessoa.nome}" />
+							</p:column>										
+						</p:autoComplete>
+   					</p:panel>
+   					
+   					<p:panel>
+   						<p:outputLabel value="Data Inicial" for="dataInicial"/>
+	    				<p:inputMask mask="99/99/9999" id="dataInicial" value="#{CAgendamentoBean.filtro.dataInicial}" size="20">
+	    					<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+	    				</p:inputMask>
+   					</p:panel>
+   					
+   					<p:panel>
+   						<p:outputLabel value="Data Final" for="dataFinal"/>
+	    				<p:inputMask mask="99/99/9999" id="dataFinal" value="#{CAgendamentoBean.filtro.dataFinal}" size="20">
+	    					<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+	    				</p:inputMask>
+   					</p:panel>
+   					
+   					<p:panel>
+   						<h:outputLabel value="Status" />
+   						<p:selectOneMenu value="#{CAgendamentoBean.statusAgendamento}">
+   							<f:selectItems var="status" itemLabel="#{status.descricao}" itemValue="#{status}" value="#{CAgendamentoBean.comboStatusAgendamento}" />
+   							<f:selectItem itemLabel="Todos" itemValue=""/>
+   						</p:selectOneMenu>
+   					</p:panel>
+   					
+   					<p:panelGrid columns="4">
+	   					
+						<p:button value="Novo Agendamento" outcome="/agendamento/FormAgenda" />
+   					</p:panelGrid>
+   					
+
+   					<p:panel>
+						<p:outputLabel value="Dentista" for="dentista" />
+						<p:selectOneMenu id="dentista" value="#{CAgendamentoBean.filtro.dentista}" converter="dentistaConverter">
+							<f:selectItem itemLabel="Selecione" />
+							<f:selectItems value="#{CAgendamentoBean.listaDentistas}" var="dentista" 
+								itemValue="#{dentista}" itemLabel="#{dentista.nome}" />
+						</p:selectOneMenu>
+					</p:panel>
+					
+					<p:panel>
+						<br />
+						<p:selectBooleanCheckbox itemLabel="Agendamentos Programados (Mensal ou Anualmente)" value="#{CAgendamentoBean.filtroAgendamentoProgramado}">
+							<p:ajax event="change" update="agendamentosTable" listener="#{CAgendamentoBean.pesquisar}"/>
+						</p:selectBooleanCheckbox>
+					</p:panel>
+					
+					<p:panel>
+						<br />
+						<p:commandButton icon="fa fa-filter" value="Filtrar" action="#{CAgendamentoBean.pesquisar}" update="@form" />
+					</p:panel>
+
+
+   				</p:panelGrid>
+	      		
+      		</div>
+      		
+      		
+
+
+	    	<p:dataTable id="agendamentosTable" value="#{CAgendamentoBean.agendamentosFiltrados}" var="item"
+	    		style="margin-top: 20px" emptyMessage="Nenhum agendamento encontrado."
+	    		rows="20" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+	    		
+	    		<p:column headerText="Lembrete">
+	    			<h:outputText value="#{item.lembrete}"/>
+	    		</p:column>
+	    		
+	    		<p:column headerText="Agendado para:">
+	    			<h:outputText value="#{item.data}" rendered="#{not CAgendamentoBean.filtroAgendamentoProgramado}" >
+	    				<f:convertDateTime pattern="dd/MM/yyyy" />
+	    			</h:outputText>
+	    			<h:outputText value="Todo dia #{item.diaRealizacao}" rendered="#{CAgendamentoBean.filtroAgendamentoProgramado and item.tipoIntervalo.ordinal == 0}" />
+	    			<h:outputText value=" #{item.diaRealizacao}/#{item.mesRealizacao} (Anualmente)" rendered="#{CAgendamentoBean.filtroAgendamentoProgramado and item.tipoIntervalo.ordinal == 1}" />
+	    		</p:column>
+	    		
+	    		<p:column headerText="Horário">
+	    			<h:outputText value="#{item.horario}"/>
+	    		</p:column>
+	    		
+	    		<p:column headerText="Cliente">
+	    			<h:outputText value="#{item.cliente.nome}"/>
+	    		</p:column>
+
+	    		<p:column headerText="Status" rendered="#{not CAgendamentoBean.filtroAgendamentoProgramado}" >
+	    			
+	    			<h:outputText value="#{item.status.descricao}"
+						rendered="#{item.status.ordinal == 0}"
+						style="color:orange; font-weight: bold;" />
+						
+					<h:outputText value="#{item.status.descricao}"
+						rendered="#{item.status.ordinal == 1}"
+						style="color:green; font-weight: bold;" />
+						
+					<h:outputText value="#{item.status.descricao}"
+						rendered="#{item.status.ordinal == 2}"
+						style="color:red; font-weight: bold;" />
+					
+	    		</p:column>
+	    		
+	    		<p:column headerText="Dentista">
+	    			<h:outputText value="#{item.dentista.nome}" />
+	    		</p:column>
+
+	    		<p:column style="text-align: center; width: 200px">
+	    			<p:button icon="ui-icon-pencil" title="Editar" outcome="/agendamento/FormAgenda" disabled="#{item.status.ordinal == 2 or item.status.ordinal == 3}">
+	    				<f:param name="item" value="#{item.chaveRegistro}" />
+	    			</p:button>
+	    			<p:commandButton icon="ui-icon-check" title="Concluir" oncomplete="PF('confirmacaoConcluir').show()" 
+	    				process="@this" update=":frmPesquisa:confirmacaoConcluirDialog" disabled="#{item.status.ordinal == 2 or item.status.ordinal == 3}">
+	    				<f:setPropertyActionListener value="#{item}" target="#{CAgendamentoBean.agendamentoSelecionado}" />
+	    			</p:commandButton>
+	    			<p:commandButton icon="ui-icon-close" title="Cancelar" oncomplete="PF('confirmacaoCancelar').show()" 
+	    				process="@this" update=":frmPesquisa:confirmacaoCancelarDialog" disabled="#{item.status.ordinal == 2 or item.status.ordinal == 3}">
+	    				<f:setPropertyActionListener value="#{item}" target="#{CAgendamentoBean.agendamentoSelecionado}" />
+	    			</p:commandButton>
+	    			<p:commandButton icon="ui-icon-trash" title="Excluir" oncomplete="PF('confirmacaoExclusao').show()" 
+	    				process="@this" update=":frmPesquisa:confirmacaoExclusaoDialog" disabled="#{item.status.ordinal == 2 or item.status.ordinal == 3}">
+	    				<f:setPropertyActionListener value="#{item}" target="#{CAgendamentoBean.agendamentoSelecionado}" />
+	    			</p:commandButton>
+	    		</p:column>
+	    		
+	    		
+	    		
+	    	</p:dataTable>
+	    	
+	    	<p:confirmDialog header="Concluir Agendamento" 
+	   			message="Tem certeza que deseja concluir este lembrete?"
+	   			widgetVar="confirmacaoConcluir" id="confirmacaoConcluirDialog">
+	   			<p:button value="Não" onclick="PF('confirmacaoConcluir').hide(); return false;" />
+	   			<p:commandButton value="Sim" oncomplete="PF('confirmacaoConcluir').hide();" 
+	   				action="#{CAgendamentoBean.concluirAgendamento}" process="@this" update="@form"/>
+	    	</p:confirmDialog>
+	    	
+	    	<p:confirmDialog header="Cancelar Agendamento" 
+	   			message="Tem certeza que deseja cancelar este lembrete?"
+	   			widgetVar="confirmacaoCancelar" id="confirmacaoCancelarDialog">
+	   			<p:button value="Não" onclick="PF('confirmacaoCancelar').hide(); return false;" />
+	   			<p:commandButton value="Sim" oncomplete="PF('confirmacaoCancelar').hide();" 
+	   				action="#{CAgendamentoBean.cancelarAgendamento}" process="@this" update="@form"/>
+	    	</p:confirmDialog>
+	    	
+	    	<p:confirmDialog header="Exclusão" 
+	   			message="Tem certeza que deseja excluir este lembrete?"
+	   			widgetVar="confirmacaoExclusao" id="confirmacaoExclusaoDialog">
+	   			<p:button value="Não" onclick="PF('confirmacaoExclusao').hide(); return false;" />
+	   			<p:commandButton value="Sim" oncomplete="PF('confirmacaoExclusao').hide();" 
+	   				action="#{CAgendamentoBean.excluir}" process="@this" update="@form"/>
+	    	</p:confirmDialog>
+	    	
+    	</h:form>
+    </ui:define>
+</ui:composition>

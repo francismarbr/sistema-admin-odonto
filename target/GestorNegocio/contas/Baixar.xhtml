@@ -1,0 +1,275 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      template="/WEB-INF/template/Layout.xhtml">
+      
+      <ui:define name="titulo">Baixar Contas</ui:define>
+      
+      <ui:define name="conteudo">
+      	<f:metadata>
+			<f:event listener="#{CMovimentacaoBean.inicializar}" type="preRenderView" />
+		</f:metadata>
+      	<h1 class="ac-titulo-pagina">Baixar Contas</h1>
+      	
+      	<h:form id="frmBaixas">
+      	
+      		<p:messages autoUpdate="true" closable="true" />
+
+     		
+      		<div class="ui-fluid">
+	      			
+   				<p:panelGrid columns="5" layout="grid" styleClass="panelgrid-noborder">
+   					  					
+   					<p:panel>
+   						<p:outputLabel value="Tipo de Conta" for="tipoConta"/>
+	    				<p:selectOneButton id="tipoConta" value="#{CMovimentacaoBean.filtro.tipoConta}" required="true" requiredMessage="Selecione o tipo de conta!">
+	    					<f:selectItems var="tipoConta" value="#{CMovimentacaoBean.comboTipoConta}" itemLabel="#{tipoConta.descricao}"  itemValue="#{tipoConta}" />
+	    					<p:ajax process="@this" event="change" update="pessoaFornecedor" />
+	    				</p:selectOneButton>
+   					</p:panel>
+   					   					
+   					<p:panel id="pessoaFornecedor">
+   						<p:outputLabel value="Baixar de:" for="pessoa"/>
+	    				<p:autoComplete id="pessoa" size="50" converter="pessoaConverter" rendered="#{CMovimentacaoBean.filtro.tipoConta.codigo == 0}"
+								value="#{CMovimentacaoBean.filtro.pessoa}" completeMethod="#{CMovimentacaoBean.completarPessoa}"
+								var="pessoa" itemLabel="#{pessoa.nome}" itemValue="#{pessoa}" forceSelection="true"/>
+						<p:autoComplete id="fornecedor" size="50" converter="fornecedorConverter" rendered="#{CMovimentacaoBean.filtro.tipoConta.codigo == 1}"
+								value="#{CMovimentacaoBean.filtro.fornecedor}" completeMethod="#{CMovimentacaoBean.completarFornecedor}"
+								var="fornecedor" itemLabel="#{fornecedor.nome}" itemValue="#{fornecedor}" forceSelection="true"/>
+   					</p:panel>
+   					
+   					<p:panel>
+   						<p:outputLabel value="Data Inicial" for="dataInicial"/>
+	    				<p:calendar id="dataInicial" size="10" pattern="dd/MM/yyyy" value="#{CMovimentacaoBean.filtro.dataInicial}">
+	    					<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+	    				</p:calendar>
+   					</p:panel>
+   					
+   					<p:panel>
+   						<p:outputLabel value="Data Final" for="dataFinal"/>
+   						<p:calendar id="dataFinal" size="10" pattern="dd/MM/yyyy" value="#{CMovimentacaoBean.filtro.dataFinal}">
+	    					<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+	    				</p:calendar>
+   					</p:panel>
+   					
+   					<p:panelGrid columns="4" styleClass="panelgrid-noborder">
+   						<br />
+	   					<p:commandButton value="Pesquisar" action="#{CMovimentacaoBean.pesquisar}" update="@form" />
+						<p:button value="BAIXAR" id="baixar" disabled="#{not CMovimentacaoBean.ativarBotaoBaixar}"  onclick="PF('baixarContaDialog').show(); return false" />
+   					</p:panelGrid>
+
+   				</p:panelGrid>
+	      		
+      		</div>
+
+      		<h:panelGrid id="consulta">
+      		<p:dataTable id="parcelasTable" value="#{CMovimentacaoBean.listaParcelasSelecionadas}" var="item"
+	    		style="margin-top: 20px" emptyMessage="Nenhum parcela encontrada." rows="20" scrollable="true" scrollHeight="400"
+	    		paginator="true" reflow="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+	    		
+	    		
+	    		<p:column styleClass="centralizado">
+	    			<h:selectBooleanCheckbox value="#{item.selecionada}" immediate="true">
+	    				<p:ajax event="change" update=":frmBaixas:consulta, :frmBaixas:baixar, parcelasTable, :frmBaixas:valorTotalBaixar"/>
+	    			</h:selectBooleanCheckbox>
+	    		</p:column>
+	    		
+	    		<p:column headerText="Nome">
+	    			<h:outputText value="#{item.parcela.receita.nome} - parc: #{item.parcela.numero}/#{item.parcela.receita.quantidadeParcelas}" 
+	    				rendered="#{CMovimentacaoBean.filtro.tipoConta.codigo == 0}" />
+	    			<h:outputText value="#{item.parcela.despesa.nome} - parc: #{item.parcela.numero}/#{item.parcela.despesa.quantidadeParcelas}" 
+	    				rendered="#{CMovimentacaoBean.filtro.tipoConta.codigo == 1}" />
+	    		</p:column>
+	    		
+	    		<p:column headerText="Pagar para:" rendered="#{CMovimentacaoBean.filtro.tipoConta.codigo == 1}">
+	    			<h:outputText value="#{item.parcela.despesa.fornecedor.nome}" />
+	    		</p:column>
+	    		
+	    		<p:column headerText="Receber de:" rendered="#{CMovimentacaoBean.filtro.tipoConta.codigo == 0}">
+	    			<h:outputText value="#{item.parcela.receita.cliente.nome}" />
+	    		</p:column>
+	    		
+			    <p:column headerText="Valor a pagar" styleClass="centralizado">
+  					<h:outputText value="#{item.parcela.valor}">
+  						<f:convertNumber type="currency" />
+  					</h:outputText>
+	    		</p:column>
+	    		
+	    		<p:column headerText="Saldo" styleClass="centralizado">
+	    			<h:outputText value="#{item.parcela.valorTotalSaldoPorParcela}">
+	    				<f:convertNumber type="currency" />
+	    			</h:outputText>
+	    		</p:column>
+	    		
+	    		<p:column headerText="Vl.Baixar" styleClass="centralizado">
+	    			<p:inputText value="#{item.parcela.valorPagamento}"
+						required="true"	size="7"
+						rendered="#{item.selecionada and CMovimentacaoBean.tipoMovimentacao.codigo == 1}"
+						onfocus="this.select();"
+						requiredMessage="Informe o valor de baixa da parcela #{item.parcela.despesa.nome} - #{item.parcela.numero}"
+						converter="O valor de baixa da parcela #{item.parcela.despesa.nome} - #{item.parcela.numero} deve conter apenas números"
+						onkeypress="return (MascaraMoeda(this,'.',',',event))">
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+						<p:ajax event="change" process="@this" update=":frmBaixas:valorTotalBaixar" />
+					</p:inputText>
+
+					<h:outputText value="#{item.parcela.valorPagamento}" 
+						rendered="#{item.selecionada and CMovimentacaoBean.tipoMovimentacao.codigo == 0}">
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+					</h:outputText>
+	    		</p:column>
+	    		
+	    		<p:column headerText="Situação" styleClass="centralizado">
+	    			<h:selectOneMenu value="#{item.parcela.novaSituacao}"
+	    				rendered="#{item.selecionada and CMovimentacaoBean.tipoMovimentacao.codigo == 1}">
+
+						<f:selectItems value="#{CMovimentacaoBean.comboTipoBaixaParcelaQuitadaParcial}" var="tipoBaixa" itemLabel="#{tipoBaixa.descricao}" itemValue="#{tipoBaixa}"/>
+						<p:ajax event="change" process="@this" />
+					</h:selectOneMenu>
+					<h:outputText value="Cancelada"
+						rendered="#{item.selecionada and CMovimentacaoBean.tipoMovimentacao.codigo == 0}" />
+	    		</p:column>
+	    		
+	    		<p:column headerText="Vencimento" styleClass="centralizado">
+	    			<h:outputText value="#{item.parcela.dataVencimento}">
+	    				<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+	    			</h:outputText>
+	    			<br />
+	    			<h:outputText value="#{item.parcela.diasParaVencerTexto}"
+						rendered="#{item.parcela.diasParaVencer > 0}"
+						style="color:green; font-weight: bold;" />
+
+					<h:outputText value="#{parcela.diasParaVencerTexto}"
+						rendered="#{item.parcela.diasParaVencer == 0}"
+						style="color:orange; font-weight: bold;" />
+
+					<h:outputText value="#{item.parcela.diasParaVencerTexto}"
+						rendered="#{not (item.parcela.diasParaVencer >= 0)}"
+						style="color:red; font-weight: bold;" />
+	    		</p:column>
+
+
+	    		<p:column headerText="Cancelar" styleClass="centralizado">
+	    			<p:commandButton icon="ui-icon-closethick" title="Cancelar" disabled="#{not item.selecionada}" oncomplete="PF('confirmacaoCancelamento').show()" 
+	    				process="@this" update=":frmBaixas:confirmacaoCancelamentoDialog">
+	    				<f:setPropertyActionListener value="item" target="#{item.cancelarParcela}" />
+	    			</p:commandButton>
+	    			
+	    		</p:column>
+	    		    			    		
+	    	</p:dataTable>
+	    	</h:panelGrid>
+	    	
+ 	      		<p:dialog widgetVar="baixarContaDialog" modal="true" header="Baixar Conta" id="baixarContaDialog"
+			 		resizable="false" responsive="true">
+			
+					<h:panelGroup id="baixarContaPanel" layout="block" styleClass="ui-fluid">
+			
+						<p:messages autoUpdate="false" closable="true" />
+							<p:panelGrid columns="2" layout="grid" styleClass="panelgrid-noborder"
+								columnClasses="ui-grid-col-4, ui-grid-col-8">
+							
+							<p:panel id="valorTotalBaixar">
+								<h:outputText value="Total: " />
+								<h:outputText value="#{CMovimentacaoBean.valorTotalBaixar}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:panel>
+							
+							<p:panel rendered="false">
+								<p:selectBooleanCheckbox  itemLabel="Baixar com Cheque" value="#{CMovimentacaoBean.baixarComCheque}" immediate="true">
+	    							<p:ajax event="change" update="baixarContaDialog" oncomplete="PF('baixarContaDialog').show(); return false"/>
+								</p:selectBooleanCheckbox>
+							</p:panel>
+							
+							<p:panel>
+								<p:outputLabel value="Conta a Creditar" for="conta" />
+								<p:selectOneMenu id="conta" value="#{CMovimentacaoBean.conta}" converter="contaBancariaConverter">
+									<f:selectItem itemLabel="Selecione" />
+									<f:selectItems value="#{CMovimentacaoBean.listaContasBancarias}" var="conta"
+										itemValue="#{conta}" itemLabel="#{conta.banco.nome} - #{conta.agencia}/#{conta.conta}" />
+								</p:selectOneMenu>
+							</p:panel>
+							
+							
+							</p:panelGrid>
+							<!-- 
+						<hr rendered="#{CMovimentacaoBean.baixarComCheque}" />
+						<p:panelGrid  id="panelGrid-cheque" columns="3" layout="grid" styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-4" rendered="#{CMovimentacaoBean.baixarComCheque}">							
+							<p:panel>
+								<p:outputLabel value="Banco" for="banco" />
+								<p:selectOneMenu id="banco" value="#{CMovimentacaoBean.movimentacao.cheque.banco}">
+									<f:selectItem itemLabel="Selecione" />
+									<f:selectItems value="#{CMovimentacaoBean.listaBancos}" var="banco" 
+										itemValue="#{banco}" itemLabel="#{banco.nome}" />
+								</p:selectOneMenu>
+							</p:panel>
+							
+							<p:panel>				
+								<p:outputLabel value="Agência" for="agencia" />
+								<p:inputText id="agencia" value="#{CMovimentacaoBean.cheque.agencia}" />
+							</p:panel>
+							
+							<p:panel>							
+								<p:outputLabel value="Nº Conta" for="numConta" />
+								<p:inputText id="numConta" value="#{CMovimentacaoBean.cheque.conta}" />
+							</p:panel>
+							
+							<p:panel>
+								<p:outputLabel value="Série" for="serie" />
+								<p:inputText id="serie" value="#{CMovimentacaoBean.cheque.serie}" />
+							</p:panel>
+			
+							<p:panel>
+								<p:outputLabel value="Número" for="numero" />
+								<p:inputText id="numero" value="#{CMovimentacaoBean.cheque.numero}" />
+							</p:panel>	
+							
+							<p:panel>
+								<p:outputLabel value="Valor" for="valor" />
+								<p:inputText id="valor" value="#{CMovimentacaoBean.cheque.valor}" />
+							</p:panel>
+							
+							<p:panel>
+								<p:outputLabel value="Data Emissão" for="dataEmissao" />
+								<p:inputText id="dataEmissao" value="#{CMovimentacaoBean.cheque.dataEmissao}" />
+							</p:panel>
+							
+							<p:panel>
+								<p:outputLabel value="Pré-Datado" for="dataPreDatado" />
+								<p:inputText id="dataPreDatado" value="#{CMovimentacaoBean.cheque.dataPreDatado}" />
+							</p:panel>
+							
+						</p:panelGrid>
+						 -->
+			
+						<p:commandButton value="Concluir Baixa"
+							action="#{CMovimentacaoBean.baixarParcelasSelecionadas}" id="concluir"
+							update="@form"
+							process="baixarContaDialog" onclick="PF('baixarContaDialog').hide(); return true" />
+			
+					</h:panelGroup>
+				</p:dialog>
+				
+				<p:confirmDialog header="Cancelar Parcela" 
+	    			message="Tem certeza que deseja cancelar esta Parcela?"
+	    			widgetVar="confirmacaoCancelamento" id="confirmacaoCancelamentoDialog">
+	    			<p:panel>
+	    				<h:outputLabel value="Descreva por quê." />
+	    				<p:inputText value="#{CMovimentacaoBean.descricaoCancelamento}">
+	    					<p:ajax event="change" />
+	    				</p:inputText>
+	    			</p:panel>
+	    			
+	    			<p:commandButton value="Concluir Cancelamento" oncomplete="PF('confirmacaoCancelamento').hide();" 
+	    				action="#{CMovimentacaoBean.cancelarParcelas}" process="@this" update="@form"/>
+	    	</p:confirmDialog>
+     		
+      		 
+      	</h:form>
+      </ui:define>
+      
+</ui:composition>

@@ -1,0 +1,56 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      template="/WEB-INF/template/Layout.xhtml">
+      
+      <ui:define name="titulo">Pesquisa Empresa</ui:define>
+      
+      <ui:define name="conteudo">
+      	<h1 class="ac-titulo-pagina">Pesquisa Empresa</h1>
+      	
+      	<h:form id="frmPesquisa">
+      	
+      		<p:messages autoUpdate="true" closable="true" />
+      		
+      		<p:toolbar>
+      			<p:toolbarGroup align="right">
+      				<p:commandButton value="Pesquisar" action="#{CEmpresaBean.pesquisar}" update="@form" />
+      			</p:toolbarGroup>
+      		</p:toolbar>
+      		
+
+      		
+      		<p:dataTable id="empresasTable" value="#{CEmpresaBean.empresasFiltradas}" var="empresa"
+	    		style="margin-top: 20px" emptyMessage="Nenhuma empresa encontrada." rows="10"
+	    		paginator="true" reflow="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+	    		
+	    		<p:column headerText="Cód. Empresa" style="text-align: center" sortBy="#{empresa.id}" >
+	    			<h:outputText value="#{empresa.id}" />
+	    		</p:column>
+	    		<p:column headerText="CPF/CNPJ" style="text-align: center" >
+	    			<h:outputText value="#{empresa.cpfCnpj}" />
+	    		</p:column>
+	    		<p:column headerText="Nome" sortBy="#{empresa.nome}">
+	    			<h:outputText value="#{empresa.nome}" />
+	    		</p:column>
+	    		<p:column headerText="Nome Usual / Nome Fantasia" priority="6">
+	    			<h:outputText value="#{empresa.nomeFantasia}" />
+	    		</p:column>
+
+	    		<p:column headerText="RG / Insc. Municipal" priority="5" style="text-align: center" >
+	    			<h:outputText value="#{empresa.rgInscEstadual}" />
+	    		</p:column>
+	    		<p:column>
+	    			<p:button outcome="/empresa/FormEmpresa" icon="ui-icon-pencil" title="Editar">
+	    				<f:param name="empresa" value="#{empresa.chaveRegistro}" />
+	    			</p:button>
+	    		</p:column>
+	    		
+	    	</p:dataTable>
+     		 
+      	</h:form>
+      </ui:define>
+      
+</ui:composition>

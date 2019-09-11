@@ -1,0 +1,11 @@
+<html>
+    <body>
+    	<p>Olá, você solicitou uma recuperação de senha para o login <strong>$usuario.login</strong> no sistema Admin Odonto.</p>
+    	<p>Acesse o link abaixo para concluir o processo!</p>
+    	
+    	<p> <a href="http://app.adminodonto.com/cadastrar-nova-senha.xhtml?token=$usuario.tokenTemporario">Alterar Senha</a> </p>
+    	
+    	<p>*Obs.: Se não sabe do que se trata esse email, basta ignorá-lo. Não compartilhe e nem encaminhe para ninguém.</p>
+    	
+    </body>
+</html>

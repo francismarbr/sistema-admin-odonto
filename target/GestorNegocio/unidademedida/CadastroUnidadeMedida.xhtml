@@ -1,0 +1,56 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
+      template="/WEB-INF/template/Layout.xhtml">
+      
+      <ui:define name="titulo">#{CUnidadeMedidaBean.editando ? 'Edição Unidade Medida' : 'Nova Unidade de Medida'}</ui:define>
+      
+      <ui:define name="conteudo">
+      
+      	<f:metadata>
+			<o:viewParam name="unidadeMedida" value="#{CUnidadeMedidaBean.unidadeMedida}" converter="unidadeMedidaConverter" />
+		</f:metadata>
+      
+      	<h:form id="frm">
+      	
+      		<h1 class="ac-titulo-pagina">#{CUnidadeMedidaBean.editando ? 'Edição Unidade Medida' : 'Nova Unidade de Medida'}</h1>
+      	
+      		<p:messages autoUpdate="true" closable="true" />
+      		
+      		<p:toolbar>
+      			<p:toolbarGroup>
+      				<p:button value="Novo" outcome="/unidademedida/CadastroUnidadeMedida" />
+      			</p:toolbarGroup>
+      			
+      			<p:toolbarGroup align="right">
+      				<p:commandButton value="Salvar" id="botaoSalvar" action="#{CUnidadeMedidaBean.salvar}" update="@form" />
+      				<p:separator />
+      				<p:button value="Pesquisar" outcome="/unidademedida/PesquisaUnidadeMedida" />
+      			</p:toolbarGroup>
+      		</p:toolbar>
+      		
+      		<div class="ui-fluid">
+	      			
+   				<p:panelGrid columns="4" layout="grid"
+   						styleClass="panelgrid-noborder">
+   					<p:panel rendered="#{CUnidadeMedidaBean.editando}">
+   						<p:outputLabel value="Código" for ="id" rendered="#{CUnidadeMedidaBean.editando}" />
+   						<p:inputText id="id" size="20" value="#{CUnidadeMedidaBean.unidadeMedida.id}" readonly="true" rendered="#{CUnidadeMedidaBean.editando}"/>
+   					</p:panel>
+   					
+   					<p:panel>
+   						<p:outputLabel value="Nome" for ="nome"/>
+						<p:inputText id="nome" size="50" maxlength="80" value="#{CUnidadeMedidaBean.unidadeMedida.nome}" />
+   					</p:panel>
+ 				
+   				</p:panelGrid>
+	      		
+      		</div>
+      		
+      	</h:form>
+      </ui:define>
+      
+</ui:composition>

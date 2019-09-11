@@ -1,0 +1,397 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
+      template="/WEB-INF/template/Layout.xhtml">
+      
+      <ui:define name="conteudo">
+      	<h1 class="ac-titulo-pagina">#{CClienteBean.editando ? 'Edição de Cliente' : 'Novo Cliente'}</h1>
+      	
+		<f:metadata>
+			<o:viewParam name="cliente" value="#{CClienteBean.chaveRegistroEdicao}" />
+			<!-- <o:viewParam name="pessoa" value="#{CClienteBean.pessoa}" /> -->
+			<f:event listener="#{CClienteBean.inicializar}" type="preRenderView" />
+		</f:metadata>
+
+      	
+      	<h:form id="frm">
+      		<p:toolbar>
+      			<p:toolbarGroup>
+      			<p:button value = "Novo Cliente" outcome="/clientes/CadastroCliente"/>
+      				
+      			</p:toolbarGroup>
+      			
+      			<p:toolbarGroup align="right">
+      				<p:commandButton value = "Salvar" action="#{CClienteBean.salvar}" process="tabView @this" update="@form"/>
+      				<p:separator />
+      				<p:button value="Pesquisar" outcome="/clientes/PesquisaCliente" />
+      			</p:toolbarGroup>
+      		</p:toolbar>
+      		
+      		<p:messages autoUpdate="false" closable="true"/>
+      		
+      		
+      		<p:commandButton style="margin-top: 10px; float: right;" value="Histórico Financeiro" action="#{CClienteBean.verHistoricoFinanceiro}"  
+      			update="historicoFinanceiroDialog" oncomplete="PF('historicoFinanceiroDialog').show(); return false" styleClass="botaoVerde"
+      			rendered="#{CClienteBean.editando}" />
+      			
+      		<p:commandButton style="margin: 10px; float: right;" value="Anamneses" action="#{CClienteBean.verAnamneses}"  
+      			update="anamnesesDialog" oncomplete="PF('anamnesesDialog').show(); return false" styleClass="botaoVerde"
+      			rendered="#{CClienteBean.editando}" />
+      			
+      		<p:commandButton style="margin: 10px; float: right;" value="Tratamentos" action="#{CClienteBean.verTratamentos}"  
+      			update="tratamentosDialog" oncomplete="PF('tratamentosDialog').show(); return false" styleClass="botaoVerde"
+      			rendered="#{CClienteBean.editando}" />
+      		<br />
+	        	
+      		<div class="ui-fluid">
+	      		<p:tabView style="margin-top: 20px" id="tabView">
+	      			<p:tab title="Dados básicos">
+	      				<p:panelGrid id="dadosBasicos" columns="4" layout="grid"
+	      						styleClass="panelgrid-noborder">
+	      					
+	      					<p:panel rendered="#{CClienteBean.excluivel}">
+		      					<p:outputLabel value="Cód. Cliente" for="codigo" />
+		      					<p:inputText id="codigo" readonly="true" value="#{CClienteBean.pessoa.chaveRegistro}" />
+	      					</p:panel>
+	      						
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Nome" for="nome" />
+		      					<p:inputText id="nome" required="true" value="#{CClienteBean.pessoa.nome}" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Nome Usual" for="nomeUsual" />
+		      					<p:inputText id="nomeUsual" required="true" value="#{CClienteBean.pessoa.nomeUsual}" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Data de nascimento" for="dataNascimento" />
+		      					<p:inputMask mask="99/99/9999" id="dataNascimento" value="#{CClienteBean.pessoa.dataNascimento}">
+		      						<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+		      					</p:inputMask>
+	      					</p:panel>
+	      	
+	      					<p:panel>
+	      						<p:outputLabel value="CPF" for="cpf" />
+		      					<p:inputMask id="cpf"  mask="999.999.999-99" value="#{CClienteBean.pessoa.cpf}" />
+	      					</p:panel>
+
+	      					<p:panel>
+		      					<p:outputLabel value="RG" for="rg" />
+		      					<p:inputMask id="rg"  value="#{CClienteBean.pessoa.rg}" />
+	      					</p:panel>
+      					
+	      					<p:panel>
+		      					<p:outputLabel value="E-mail" for="email" />
+		      					<p:inputText id="email" value="#{CClienteBean.pessoa.email}" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Telefone 1" for="telefone1" />
+		      					<p:inputMask id="telefone1" required="true" value="#{CClienteBean.pessoa.telefone1}" mask="(99) 9999-9999?9" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Telefone 2" for="telefone2" />
+		      					<p:inputMask id="telefone2" value="#{CClienteBean.pessoa.telefone2}" mask="(99) 9999-9999?9" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Telefone 3" for="telefone3" />
+		      					<p:inputMask id="telefone3" value="#{CClienteBean.pessoa.telefone3}" mask="(99) 9999-9999?9" />
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Data de Cadastro" for="dataCadastro" />
+		      					<p:inputMask mask="99/99/9999" id="dataCadastro" value="#{CClienteBean.pessoa.dataCadastro}">
+		      						<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+		      					</p:inputMask>
+	      					</p:panel>
+	      					
+	      					<p:panel>
+		      					<p:outputLabel value="Estado Civil" for="estadoCivil" />
+		      					<p:selectOneMenu id="estadoCivil" value="#{CClienteBean.pessoa.estadoCivil}">
+		      						<f:selectItem itemLabel="Selecione" />
+		      						<f:selectItem itemLabel="Solteiro" itemValue="Solteiro" />
+		      						<f:selectItem itemLabel="Casado" itemValue="Casado" />
+		      						<f:selectItem itemLabel="Divorciado" itemValue="Divorciado" />
+		      					</p:selectOneMenu>
+	      					</p:panel>
+	      					      						 							
+							<p:panel>
+		      					<p:outputLabel value="Status" for="status" />
+		      					<p:selectOneMenu id="status" value="#{CClienteBean.pessoa.status}" required="true" requiredMessage="Selecione o Status desse cliente">
+		      						<f:selectItem itemLabel="Selecione" />
+		      						<f:selectItem itemLabel="Ativo" itemValue="Ativo" />
+		      						<f:selectItem itemLabel="Inativo" itemValue="Inativo" />
+		      					</p:selectOneMenu>
+	      					</p:panel>				
+	      				
+	      				</p:panelGrid>
+	      				
+	      				<p:panel id="toggleable" collapsed="true" header="Endereço" toggleable="true" toggleSpeed="500" closeSpeed="500" widgetVar="panel">
+ 					 
+ 					 		<p:panelGrid columns="4" layout="grid" styleClass="panelgrid-noborder">
+					         	<p:panel>
+									<p:outputLabel value="Logradouro" for="logradouro" />
+									<p:inputText id="logradouro" value="#{CClienteBean.pessoa.endereco.logradouro}" /> 
+								</p:panel>
+								
+								<p:panel>				
+									<p:outputLabel value="Número" for="numeroEndereco" />
+									<p:inputText id="numeroEndereco" value="#{CClienteBean.pessoa.endereco.numero}" />
+								</p:panel>
+								
+								<p:panel>							
+									<p:outputLabel value="Bairro" for="bairro" />
+									<p:inputText id="bairro" value="#{CClienteBean.pessoa.endereco.bairro}" />
+								</p:panel>
+								
+								<p:panel>
+									<p:outputLabel value="Complemento" for="complemento" />
+									<p:inputText id="complemento" value="#{CClienteBean.pessoa.endereco.complemento}" />
+								</p:panel>
+								
+								<p:panel>
+									<p:outputLabel value="UF" for="uf" />
+									<p:selectOneMenu id="uf" value="#{CClienteBean.filtro.uf}">
+										<f:selectItems value="#{CClienteBean.comboUFSigla}" />
+										<p:ajax event="change" listener="#{CClienteBean.obterCidades}" update="cidade" />
+									</p:selectOneMenu>
+								</p:panel>
+								
+								<p:panel>
+									<p:outputLabel value="Cidade" for="cidade" />
+									<p:selectOneMenu id = "cidade" value="#{CClienteBean.pessoa.endereco.cidade}">
+										<f:selectItems var="cidade" itemLabel="#{cidade.nome}" itemValue="#{cidade}" 
+											value="#{CClienteBean.listaCidades}" />
+											<p:ajax event="change" />
+									</p:selectOneMenu>
+								</p:panel>
+								
+								<p:panel>
+									<p:outputLabel value="CEP" for="cep" />
+									<p:inputMask id="cep" value="#{CClienteBean.pessoa.endereco.cep}" />
+								</p:panel>
+
+							</p:panelGrid>
+					    </p:panel>
+	      				
+	      			</p:tab>
+	      			
+	      			<p:tab id="parentes" title="Parentes" rendered="false">
+	      				
+	      				<p:button value="Adicionar Parente" style="margin-top: 20px; width: 100px;"
+							onclick="PF('novoParenteDialog').show(); return false" styleClass="botaoVerde" />
+							
+						<p:commandButton value="Adicionar Parente b" styleClass="botaoVerde"
+							action="#{CClienteBean.pessoa.adicionarParente}" id="adicionar"
+							update="tabView:parenteTable"
+							 style="margin-top: 20px; width: 100px; float: right;" />
+
+
+						<p:dataTable value="#{CClienteBean.pessoa.parentes}" var="parente"   
+							emptyMessage="Nenhum parente cadastrado"
+							style="margin-top: 10px" id="parenteTable">
+							
+							<p:column headerText="Nome do Parente">
+								<p:inputText value="#{parente.nome}">
+									<f:ajax event="change" />
+								</p:inputText>
+							</p:column>
+					
+							<p:column headerText="Parentesco">
+								<p:inputText value="#{parente.parentesco}">
+									<f:ajax event="change" />
+								</p:inputText>
+							</p:column>
+					
+							<p:column headerText="Telefone">
+								<p:inputMask mask="(99) 99999-9999" value="#{parente.telefone}">
+									<f:ajax event="change" />
+								</p:inputMask>
+							</p:column>
+
+					
+							<p:column style="text-align: center; width: 70px">
+								<p:commandButton icon="ui-icon-trash" process="@this" title="Excluir"
+									oncomplete="PF('excluirParente').show()" update=":frm:excluirParenteDialog" styleClass="botaoLaranja">
+									<f:setPropertyActionListener
+										target="#{CClienteBean.parente}" value="#{parente}" />
+								</p:commandButton>
+					
+							</p:column>
+							
+							
+					
+						</p:dataTable>
+	      				
+	      			</p:tab>
+	      			
+	      			<p:tab title="Observações">
+	      				<p:inputTextarea rows="7" value="#{CClienteBean.pessoa.observacoes}" />
+	      			</p:tab>
+	      			
+	      		</p:tabView>
+	      
+      		</div>
+      		
+      			<!-- Adicionar Parente -->
+      			<p:dialog widgetVar="novoParenteDialog" header="Novo Parente" modal="true" id="novoParenteDialog"
+					 resizable="false" responsive="true">
+			
+					<h:panelGroup id="novoParentePanel" layout="block" styleClass="ui-fluid">
+			
+						<p:messages autoUpdate="false" closable="true" />
+			
+						<p:panelGrid columns="2" layout="grid" styleClass="panelgrid-noborder">
+							
+							<p:panel>
+								<p:outputLabel value="Nome" for="nome" />
+								<p:inputText id="nome" value="#{CClienteBean.parente.nome}" /> 
+							</p:panel>
+							
+							<p:panel>
+								<p:outputLabel value="Parentesco" for="parentesco" />
+								<p:inputText id="parentesco" value="#{CClienteBean.parente.parentesco}" /> 
+							</p:panel>
+						
+							<p:panel>
+								<p:outputLabel value="Telefone" for="telefone" />
+								<p:inputMask id="telefone" value="#{CClienteBean.parente.telefone}" mask="(99) 9999-9999?9" />
+							</p:panel>
+							
+						</p:panelGrid>
+			
+						<p:commandButton value="Adicionar" styleClass="botaoVerde"
+							action="#{CClienteBean.adicionarParente}" id="adicionar"
+							update="tabView:parenteTable novoParentePanel"
+							process="novoParenteDialog" style="margin-top: 20px; width: 100px; float: right;" />
+			
+					</h:panelGroup>
+				</p:dialog>
+				
+				<!-- Dialog Histórico Financeiro -->
+				<p:dialog widgetVar="historicoFinanceiroDialog" header="Histórico Financeiro" modal="true" width="800" height="" id="historicoFinanceiroDialog"
+					 resizable="false" responsive="true">
+					<h:panelGroup  layout="block" styleClass="ui-fluid">
+						<p:dataTable var="aReceber" value="#{CClienteBean.aReceber}" scrollable="true" scrollHeight="150" emptyMessage="Nenhum registro encontrado.">
+		 					<f:facet name="header">
+		 						Contas a receber
+		 					</f:facet>
+		 					<p:column headerText="Vencimento">
+		 						<h:outputText value="#{aReceber.dataVencimento}" >
+		 							<f:convertDateTime pattern="dd/MM/yyyy" locale="pt-BR" timeZone="America/Sao_Paulo" />
+		 						</h:outputText>
+		 					</p:column>
+		
+		 					<p:column headerText="Descrição">
+		 						<h:outputText value="#{aReceber.receita.nome}" />
+		 					</p:column>
+		 					<p:column headerText="Valor a Pagar">
+		 						<h:outputText value="#{aReceber.valor}">
+		 							<f:convertNumber type="currency" />
+		 						</h:outputText>
+		 					</p:column>							
+					    </p:dataTable>
+					    <br />	      			
+						<p:dataTable var="pagamento" value="#{CClienteBean.pagamentos}" scrollable="true" scrollHeight="150" emptyMessage="Nenhum registro encontrado." >
+							<f:facet name="header">
+								Contas recebidas
+							</f:facet>
+							<p:column headerText="Vencimento">
+								<h:outputText value="#{pagamento.parcela.dataVencimento}" >
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt-BR" timeZone="America/Sao_Paulo" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Pagamento">
+								<h:outputText value="#{pagamento.dataLancamento}">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt-BR" timeZone="America/Sao_Paulo" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Descrição">
+								<h:outputText value="#{pagamento.descricao}" />
+							</p:column>
+							<p:column headerText="Valor Pago">
+								<h:outputText value="#{pagamento.valorMovimentado}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Cancelado">
+								<h:outputText value="#{pagamento.valorCancelado}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+					    </p:dataTable>
+					   </h:panelGroup>
+				</p:dialog>
+				
+				<!-- Dialog de anamneses -->
+				<p:dialog widgetVar="anamnesesDialog" header="Anamneses" modal="true" width="800" height="" id="anamnesesDialog"
+					 resizable="false" responsive="true">
+					<h:panelGroup  layout="block" styleClass="ui-fluid">
+						<p:dataTable var="anamnese" value="#{CClienteBean.anamnesesPaciente}" sortBy="#{anamnese.anamnesePaciente.dataRegistro}" scrollable="true" scrollHeight="300"
+							expandableRowGroups="true">
+					        <p:headerRow>
+					            <p:column colspan="1">
+					                <h:outputText value="#{anamnese.anamnesePaciente.dataRegistro}" >
+					                	<f:convertDateTime pattern="dd/MM/yyyy" locale="pt-BR" timeZone="America/Sao_Paulo" />
+					                </h:outputText>
+					            </p:column>
+					        </p:headerRow>
+					        <p:column headerText="Anamneses">
+					            <h:outputText value="#{anamnese.pergunta}" />
+					            <h:outputText value=" - #{anamnese.resposta}" />
+					            <h:outputText value=" - #{anamnese.observacao}" />
+					        </p:column>
+					    </p:dataTable>	
+					 </h:panelGroup>
+				</p:dialog>
+				
+				<!-- Dialog de tratamentos -->
+				<p:dialog widgetVar="tratamentosDialog" header="Tratamentos e Orçamentos" modal="true" width="800" height="" id="tratamentosDialog"
+					 resizable="false" responsive="true">
+						<p:dataTable var="item" value="#{CClienteBean.pedidosTratamentos}" scrollable="true" scrollHeight="200"
+							sortBy="Cód.: #{item.pedido.chaveRegistro} #{item.pedido.dataCriacao} - #{item.pedido.status}" expandableRowGroups="true">
+					        <p:headerRow>
+					            <p:column colspan="1">
+					            	<h:outputText value="Cód.: #{item.pedido.chaveRegistro} - " />
+					            	
+					                <h:outputText value="#{item.pedido.dataCriacao}" >
+					                	<f:convertDateTime pattern="dd/MM/yyyy" locale="pt-BR" timeZone="America/Sao_Paulo" />
+					                </h:outputText>
+					                
+					                <h:outputText value="- #{item.pedido.status.descricao}" />
+					            </p:column>
+					        </p:headerRow>
+					        
+					        <p:column headerText="Serviços / Procedimentos realizados" >
+					        	<h:outputText value="#{item.procedimento.nome}" />
+					        </p:column>
+					    </p:dataTable>
+				</p:dialog>
+				
+			
+				<p:confirmDialog header="Excluir Parente"
+					message="Deseja excluir remover este parente?"
+					widgetVar="excluirParente" id="excluirParenteDialog">
+			
+					<p:commandButton value="Sim"
+						oncomplete="PF('excluirParente').hide()"
+						action="#{CClienteBean.removerParente}" process="@this"
+						update="tabView:parenteTable" />
+					<p:button value="Não"
+						onclick="PF('excluirParente').hide(); return false;" />
+			
+				</p:confirmDialog>
+
+      		
+      	</h:form>
+      </ui:define>
+      
+</ui:composition>

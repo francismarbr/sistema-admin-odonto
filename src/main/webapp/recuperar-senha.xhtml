@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+	<h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet library="css" name="custom.css" />
+        <h:outputStylesheet library="css" name="sistema.css" />
+	</h:head>
+
+	<h:body>
+			
+		<div id="login-dialog" class="grid-login">
+			<div class="ui-fluid">
+				<div style="text-align:center;"> 
+					<h:graphicImage library="images" name="logo-admin-odonto.png" />
+					<h2 style="text-align:center;">Recuperação de Senha</h2> 
+					<p style="text-align:center;">Digite o usuário que deseja recuperar a senha</p>
+				</div>
+			
+				<h:form id="frm" prependId="false">
+					
+					<p:messages id="messages" autoUpdate="true" closable="true" />
+					
+					<p:panelGrid columns="1" layout="grid" >
+						
+						<p:inputText size="30" id="username" value="#{CRecuperarSenha.nomeUsuario}" placeholder="Nome de Usuário" />
+						
+												
+						<h:panelGroup />
+						<p:commandButton value="Recuperar Senha" action="#{CRecuperarSenha.recuperar}" ajax="false" />
+						
+					</p:panelGrid>
+					
+				</h:form>
+				
+				<br />
+				<div>
+					<h:link style="text-aling:right;" outcome="/login.xhtml"> Voltar p/ tela de Login</h:link>
+				</div>
+			</div>
+		</div>
+	</h:body>
+</html>

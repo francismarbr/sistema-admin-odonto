@@ -1,0 +1,103 @@
+/* TOPBAR */
+.ac-barratopo {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	min-height: 50px;
+	z-index: 9999;
+	background-color: black;
+}
+
+.ac-barratopo > img {
+	margin-top: 10px;
+	margin-left: 5px;
+}
+
+/*SIDEBAR - bARRA LATERAL*/
+.ac-barralateral {
+	position: fixed;
+	top: 50px;
+	botton: 0;
+	left: 0;
+	width: 210px;
+	height: 100%;
+	margin-left: -211px; /*oculta barra lateral*/
+	z-index: 9998;
+	transition: margin-left 0.5s;
+	overflow-y: auto;
+	background-color: #f6f6f6;
+	border-right: 1px solid #eaeaea;
+}
+
+.ac-barralateral.is-toggled {
+	margin-left: 0px;
+}
+
+.centralizado {
+	text-align: center;
+}
+
+@media(min-width: 960px) {
+	.ac-barralateral {
+		margin-left: 0px;
+	}
+	
+	.ac-barralateral.is-toggled {
+		margin-left: -211px;
+	}
+}
+	
+/* CONTENT */
+.ac-conteudo {
+	padding: 0 15px;
+	margin-top: 50px;
+	transition: margin-left 0.5s;
+}
+
+.main {
+	margin: 0 auto;
+	top: 10px;
+	width: 50%;
+}
+
+@media (min-width: 960px) {
+	.ac-conteudo {
+		margin-left:210px;
+	}
+	
+	.ac-conteudo.is-toggled {
+		margin-left: 0;
+	}
+}
+
+@media(max-width:800px) {
+	.centralizado {
+		text-align: left;
+	}
+	.main {
+		width: 95%;
+	}
+}
+
+.nome-usuario {
+	float:right;
+	color: #428bca;
+	margin-right: 50px;
+	margin-top: 20px;	
+}
+
+.nome-usuario a{
+	text-decoration: none;
+	color: #428bca;
+	font-size: 1em;
+	font: bold;
+}
+.caixa-config{
+	float:right;
+	margin-top: 7px;
+
+
+}
+
+}

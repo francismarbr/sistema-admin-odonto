@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio_obrigacacoes" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b1afbc0a-3406-4a47-87e4-6884ceaeec60">
+	<property name="ireport.zoom" value="0.9330147604194673"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="usuario" class="java.lang.String"/>
+	<parameter name="dataInicioProjeto" class="java.util.Date"/>
+	<parameter name="dataFimProjeto" class="java.util.Date"/>
+	<parameter name="dataInicioConclusao" class="java.util.Date"/>
+	<parameter name="dataFimConclusao" class="java.util.Date"/>
+	<parameter name="dataInicioCancelamento" class="java.util.Date"/>
+	<parameter name="dataFimCancelamento" class="java.util.Date"/>
+	<parameter name="pessoa" class="java.lang.String"/>
+	<parameter name="situacao" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="id" class="java.lang.Long">
+		<fieldDescription><![CDATA[id]]></fieldDescription>
+	</field>
+	<field name="dataInicio" class="java.util.Date">
+		<fieldDescription><![CDATA[dataInicio]]></fieldDescription>
+	</field>
+	<field name="dataConclusao" class="java.util.Date">
+		<fieldDescription><![CDATA[dataConclusao]]></fieldDescription>
+	</field>
+	<field name="dataCancelamento" class="java.util.Date">
+		<fieldDescription><![CDATA[dataCancelamento]]></fieldDescription>
+	</field>
+	<field name="empresa" class="com.agenciacrud.gestornegocio.model.Empresa">
+		<fieldDescription><![CDATA[empresa]]></fieldDescription>
+	</field>
+	<field name="pessoa" class="com.agenciacrud.gestornegocio.model.Pessoa">
+		<fieldDescription><![CDATA[pessoa]]></fieldDescription>
+	</field>
+	<field name="protocoloGerado" class="java.lang.String">
+		<fieldDescription><![CDATA[protocoloGerado]]></fieldDescription>
+	</field>
+	<field name="statusEvento" class="com.agenciacrud.gestornegocio.model.StatusEvento">
+		<fieldDescription><![CDATA[statusEvento]]></fieldDescription>
+	</field>
+	<field name="tipoEvento" class="com.agenciacrud.gestornegocio.model.TipoEvento">
+		<fieldDescription><![CDATA[tipoEvento]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="92" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="0" width="800" height="92" uuid="3db6b567-2fc5-47ce-86c4-d1b53dec9e1c"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="2" y="20" width="192" height="20" uuid="3c39561e-69f2-4bda-b204-5536a593ee5e"/>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Relatório de Atos e Eventos]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="2" y="0" width="600" height="20" uuid="583053d7-a7f0-4d07-8451-2a997b427f95"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{empresa}.getNome() + " - " + $F{empresa}.getCpfCnpj()]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="false">
+				<reportElement key="textField-20" x="697" y="0" width="103" height="12" uuid="211503c9-a67c-4def-b057-88efce6389f7"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField-21" x="697" y="12" width="103" height="12" uuid="66602cf0-7200-45ae-aeaa-844c11c81ada"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{usuario}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="staticText-27" x="655" y="0" width="42" height="12" uuid="b81d78b7-910f-407e-b632-4c970c7269c3"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Gerado em]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-28" x="655" y="12" width="38" height="12" uuid="3622940b-3585-435b-8c20-314ace3f9598"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Usuário:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="61" y="43" width="109" height="16" uuid="319ce576-355e-4f82-a361-5833905fbd00"/>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Período de Início:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="181" y="43" width="68" height="16" uuid="98fa919f-a1fe-4f34-8bf8-8dce4e7b7f77"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$P{dataInicioProjeto} != null ? $P{dataInicioProjeto} : " "]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="252" y="43" width="18" height="16" uuid="060b256b-44a6-4fca-8949-e6c83c8802bf">
+					<printWhenExpression><![CDATA[new Boolean(($P{dataFimProjeto}!=null))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[até]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="270" y="43" width="76" height="16" uuid="0d44ee60-e318-4577-aaa6-26766540db7e"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$P{dataFimProjeto} != null  ?  $P{dataFimProjeto} : " "]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="12" y="59" width="48" height="14" uuid="dbaffa2b-1449-46fd-b933-eb8158cf0603"/>
+				<text><![CDATA[Filtros]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="361" y="43" width="49" height="17" uuid="0d46f6a7-1b88-4bdb-881b-1679e701926e"/>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Situação:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="410" y="60" width="170" height="13" uuid="f5552650-0563-4920-9786-e1a9561002c2"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$P{pessoa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="361" y="60" width="49" height="13" uuid="7f927c68-0f3e-4a1d-aabd-955cbbdb71f3"/>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Pessoa]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="410" y="43" width="170" height="17" uuid="7e408578-95cf-4d1a-869e-bdecf2fc8586"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$P{situacao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="61" y="59" width="109" height="14" uuid="2b05d20d-5c2e-408a-aeac-1d27d3957c6c"/>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Período de Conclusão:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="181" y="60" width="68" height="13" uuid="daf21b68-d0a1-4e19-94bd-ecbcfacc025d"/>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dataInicioConclusao} != null ? $P{dataInicioConclusao} : " "]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="252" y="60" width="18" height="13" uuid="a14bdca2-7242-4d22-b760-092e768480d1">
+					<printWhenExpression><![CDATA[new Boolean(($P{dataFimConclusao}!=null))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[até]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="270" y="60" width="76" height="13" uuid="1bf7b1aa-5c69-4b3c-8234-a71382250976"/>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dataFimConclusao} != null ? $P{dataFimConclusao} : " "]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="181" y="73" width="68" height="15" uuid="c9522019-0d64-4b9a-974d-3a713cc75286"/>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dataInicioCancelamento} != null ? $P{dataInicioCancelamento} : " "]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="252" y="73" width="18" height="15" uuid="15c9ec3c-cc23-46d2-aca7-c2627db20701">
+					<printWhenExpression><![CDATA[new Boolean(($P{dataFimCancelamento}!=null))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[até]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="270" y="73" width="76" height="15" uuid="50fbbebe-471b-48a6-aa91-8b89a4be0afe"/>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dataFimCancelamento} != null ? $P{dataFimCancelamento} : " "]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="61" y="73" width="120" height="15" uuid="9a0a2632-7189-4262-b685-94c4bbcfd5cd"/>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Período de Cancelamento:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="23" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="1" width="800" height="19" backcolor="#CCCCCC" uuid="f62794c4-27dc-45a3-a8a2-b92ea0157d76"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="0" width="230" height="20" uuid="3fff3998-2a68-4984-9f81-105e3ff7451a"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nome Cliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="232" y="0" width="129" height="20" uuid="d2348492-b549-4c96-9795-cf70718d70a5"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ato / Evento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="364" y="0" width="86" height="20" uuid="3c74bc9e-9d40-490f-8472-04e25e53008b"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Situação]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="560" y="0" width="66" height="20" uuid="77772c67-4a86-418d-b3c3-c63ba71c58ca"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data de Início]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="632" y="0" width="100" height="20" uuid="bca06f65-d1c0-4d3f-be54-e14c2a308f3b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data de Conclusão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="735" y="0" width="67" height="20" uuid="4cdfb96e-86ea-479e-87bb-60e228604c74"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data Cancel.]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="21" width="800" height="1" uuid="7dfee0e5-9908-4a5c-9b9f-241b50793502"/>
+			</line>
+			<staticText>
+				<reportElement x="453" y="0" width="103" height="20" uuid="2036f326-11ea-4cd3-ab22-9c55bafda58e"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Protocolo]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="230" height="17" uuid="7157e2b9-c571-48c6-9f62-0dd73b961259"/>
+				<textFieldExpression><![CDATA[$F{pessoa}.getNome()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="232" y="0" width="129" height="17" uuid="183bdeea-20ed-4389-901f-4aff4aa563d3"/>
+				<textFieldExpression><![CDATA[$F{tipoEvento}.getNome()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="364" y="0" width="86" height="17" uuid="9156e016-bac6-4ad6-80bf-91702b9ac9ca"/>
+				<textFieldExpression><![CDATA[$F{statusEvento}.getDescricao()]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="632" y="0" width="100" height="17" uuid="a9dc522c-3f67-49b0-9ab5-295a510b5347"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{dataConclusao} != null ? $F{dataConclusao} : "-"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="735" y="0" width="67" height="17" uuid="6eb7e1a6-ba66-4939-ac1b-1757f7a14033"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{dataCancelamento} != null ? $F{dataCancelamento} : "-"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="453" y="0" width="103" height="17" uuid="f03b6943-ea97-4e96-a768-075b34211a37"/>
+				<textFieldExpression><![CDATA[$F{protocoloGerado} != null ? $F{protocoloGerado} : ""]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="17" width="800" height="1" uuid="69d4ae26-0ef1-46e5-87c3-5bb84a482cd0"/>
+			</line>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="560" y="0" width="66" height="17" uuid="a712dd87-112e-4e87-923f-cb5a49a32f96"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{dataInicio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="28" splitType="Stretch">
+			<textField>
+				<reportElement x="700" y="4" width="100" height="20" uuid="87c5092d-a4db-4194-9cff-3db42db3aa8a"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

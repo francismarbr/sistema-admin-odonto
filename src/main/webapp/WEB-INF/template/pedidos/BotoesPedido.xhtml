@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<p:toolbar style="margin-top: 20px">
+		<p:toolbarGroup >
+			
+			<p:commandButton id="btCancelar" value="Cancelar"  update="gerarReceitaDialog"
+				oncomplete="PF('confirmacaoCancelamentoDialog').show(); return false" 
+				disabled="#{CPedidoBean.pedido.naoCancelavel}"  styleClass="botaoLaranja" />				
+		</p:toolbarGroup>
+		
+		<p:toolbarGroup align="right">
+		
+			<p:commandButton value="Salvar" action="#{CPedidoBean.salvar}" upadate="@form"
+				disabled="#{CPedidoBean.pedido.naoAlteravel}"/>
+			<p:separator />
+			
+			<p:commandButton id="btAprovar" value="Aprovar"  action="#{CPedidoBean.gerarReceita}"  update="gerarReceitaDialog"
+				oncomplete="PF('gerarReceitaDialog').show(); return false" 
+				disabled="#{CPedidoBean.pedido.naoEmissivel}" styleClass="botaoVerde" />
+											
+			<p:separator />
+			
+			<p:commandButton value="Imprimir" action="#{CImpressaoTratamento.gerarRelatorio(CPedidoBean.pedido)}" 
+				disabled="#{CPedidoBean.pedido.naoEnviavelPorEmail}" ajax="false" />
+			
+			<p:separator />
+			
+			<p:button value="Pesquisar" outcome="/pedidos/PesquisaPedidos"/>
+			
+			<p:separator />
+			
+			<p:button value="Novo" outcome="/pedidos/CadastroPedido" />
+				
+		</p:toolbarGroup>
+		
+	</p:toolbar>
+
+</ui:composition>

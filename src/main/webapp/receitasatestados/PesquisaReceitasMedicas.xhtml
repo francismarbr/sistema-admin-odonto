@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      template="/WEB-INF/template/Layout.xhtml">
+      
+      <ui:define name="titulo">Pesquisa Receitas Médicas</ui:define>
+      
+      <ui:define name="conteudo">
+      	
+      	<f:metadata>
+			<f:event listener="#{CReceitaMedicaBean.pesquisar}" type="preRenderView" />
+		</f:metadata>
+      	
+      	<h1 class="ac-titulo-pagina">Pesquisa Receitas Médicas</h1>
+      	
+      	<h:form id="frmPesquisa">
+      	
+      		<p:messages autoUpdate="true" closable="true" />
+      		
+      		<p:toolbar>
+      			<p:toolbarGroup align="right">
+	    			<p:button value="Nova Receita" outcome="/receitasatestados/CadastroReceitaMedica" />
+	    		</p:toolbarGroup>
+      		</p:toolbar>
+      		
+      		<div class="ui-fluid">
+	      			
+   				<p:panelGrid columns="4" layout="grid" styleClass="panelgrid-noborder">
+   					
+   					<p:panel>
+						<p:outputLabel value="Paciente" for="paciente" />
+							<p:autoComplete id="paciente" size="40" 
+								value="#{CReceitaMedicaBean.filtro.pessoa}" completeMethod="#{CReceitaMedicaBean.completarCliente}"
+								var="paciente" itemLabel="#{paciente.nome}" itemValue="#{paciente}" forceSelection="true"
+								converter="pessoaConverter">
+								<p:column>
+									<h:outputText value="#{paciente.cpf} #{paciente.nome}" />
+								</p:column>										
+							</p:autoComplete>
+					</p:panel>
+					
+					<p:panel>
+						<br />
+						<p:commandButton icon="fa fa-filter" value="Filtrar" action="#{CReceitaMedicaBean.pesquisar}" update="@form" />
+					</p:panel>
+   			
+   				</p:panelGrid>
+	      		
+      		</div>
+      		
+      		<p:dataTable id="receitasTable" value="#{CReceitaMedicaBean.receitasMedicasFiltradas}" var="receita"
+	    		style="margin-top: 20px" emptyMessage="Nenhuma receita encontrada." rows="20"
+	    		paginator="true" reflow="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+
+	    		
+	    		
+	    		<p:column headerText="Data de Criação">
+	    			<h:outputText value="#{receita.dataRegistro}">
+	    				<f:convertDateTime pattern="dd/MM/yyyy" />
+	    			</h:outputText>
+	    		</p:column>
+	    		
+	    		<p:column headerText="Nome">
+	    			<h:outputText value="#{receita.paciente.nome}" />
+	    		</p:column>
+
+	    		<p:column headerText="Atestado gerado por" style="text-align: center">
+	    			<h:outputText value="#{receita.dentista.nome}" />
+	    		</p:column>
+	    		
+	    		<p:column>
+	    			<p:button outcome="/receitasatestados/CadastroReceitaMedica" icon="ui-icon-pencil" title="Editar">
+	    				<f:param name="receita" value="#{receita.chaveRegistro}" />
+	    			</p:button>
+	
+	    			<p:commandButton value="Imprimir" action="#{CImpressaoReceitaMedica.gerarRelatorio(receita)}" ajax="false" />
+	    			
+	    		</p:column>
+	    		
+	    	</p:dataTable>
+	    	
+      		 
+      	</h:form>
+      </ui:define>
+      
+</ui:composition>

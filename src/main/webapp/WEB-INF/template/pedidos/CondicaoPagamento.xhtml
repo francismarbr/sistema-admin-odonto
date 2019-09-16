@@ -6,18 +6,15 @@
 	
 	<div class="ui-fluid">
 		<p:panelGrid id="condicaoPagamento" columns="4" layout="grid" styleClass="panelgrid-noborder">
+			
 			<p:panel>
-				<h:outputText value = "A vista?" />
-				<p:selectOneButton value="#{CPedidoBean.pedido.condicaoPagamento.aVista}" disabled="#{CPedidoBean.pedido.naoAlteravel}">
-					<f:selectItem itemValue="s" itemLabel="Sim" />
-					<f:selectItem itemValue="n" itemLabel="Não" />
+				<h:outputText value ="À vista?" />
+				<p:selectBooleanButton offLabel="Não" onLabel="Sim" value="#{CPedidoBean.pedido.condicaoPagamento.AVista}" disabled="#{CPedidoBean.pedido.naoAlteravel}">
 					<p:ajax process="@this" event="change" update="condicaoPagamento" />
-				</p:selectOneButton>
-				
-		            
+				</p:selectBooleanButton>
 			</p:panel>
 			
-			<p:panel rendered="#{not CPedidoBean.avista}">
+			<p:panel rendered="#{not CPedidoBean.pedido.condicaoPagamento.AVista}">
 				<p:outputLabel value="Vl. Entrada" for="vlEntrada" />
 				<p:inputText id="vlEntrada" value="#{CPedidoBean.pedido.condicaoPagamento.valorEntrada}"
 				 	disabled="#{CPedidoBean.pedido.naoAlteravel}">
@@ -26,7 +23,7 @@
 				 </p:inputText>
 			</p:panel>
 			
-			<p:panel rendered="#{CPedidoBean.avista}">
+			<p:panel rendered="#{CPedidoBean.pedido.condicaoPagamento.AVista}">
 				<p:outputLabel value="Forma de Pagamento" for="formaPagamento" />
 				<p:selectOneMenu id="formaPagamento" value="#{CPedidoBean.pedido.condicaoPagamento.formaPagamento}" converter="formaPagamentoConverter" 
 					disabled="#{CPedidoBean.pedido.naoAlteravel}">
@@ -36,7 +33,7 @@
 				</p:selectOneMenu>
 			</p:panel>
 			
-			<p:panel rendered="#{not CPedidoBean.avista}">
+			<p:panel rendered="#{not CPedidoBean.pedido.condicaoPagamento.AVista}">
 				<p:outputLabel value="Nº Parc." for="numParcela" />
 				<p:inputText id="numParcela" value="#{CPedidoBean.pedido.condicaoPagamento.qtParcelas}" disabled="#{CPedidoBean.pedido.naoAlteravel}">
 					<p:ajax event="change" process="@this" update=":frmCadastro:parcelas" />

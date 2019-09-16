@@ -24,8 +24,8 @@ public class CondicaoPagamento implements Serializable {
 
 	@Column(length = 60)
 	private String nome;
-
-	private String aVista = "n";
+	
+	private boolean aVista= true;
 
 	private BigDecimal valorEntrada = BigDecimal.ZERO;
 	
@@ -76,11 +76,11 @@ public class CondicaoPagamento implements Serializable {
 		this.valorEntrada = valorEntrada;
 	}
 
-	public String getaVista() {
+	public boolean isAVista() {
 		return aVista;
 	}
 
-	public void setaVista(String aVista) {
+	public void setAVista(boolean aVista) {
 		this.aVista = aVista;
 	}
 }

@@ -92,7 +92,8 @@
 						<p:menuitem value="Clientes"  outcome="/ClientesAdminOdonto/ConsultaCliAdminOdonto" />
 					</p:submenu>
 			    	 <p:submenu label="Pacientes" >
-						<p:menuitem value="Clientes"  outcome="/clientes/PesquisaCliente" />
+						<p:menuitem value="Cadastrar Novo"  outcome="/clientes/CadastroCliente" />
+						<p:menuitem value="Lista de Clientes"  outcome="/clientes/PesquisaCliente" />
 			        	<p:menuitem rendered="#{seguranca.liberarMenuEmpresaPlanoMCM}" value="Anamnese" outcome="/clientes/Anamnese" />
 			        	<p:menuitem rendered="#{seguranca.liberarMenuEmpresaPlanoMCM}" value="Receita Médica" outcome="/receitasatestados/CadastroReceitaMedica" />
 			        	<p:menuitem rendered="#{seguranca.liberarMenuEmpresaPlanoMCM}" value="Atestado" outcome="/receitasatestados/Atestado" />						

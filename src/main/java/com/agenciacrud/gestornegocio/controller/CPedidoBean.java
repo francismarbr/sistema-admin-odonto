@@ -165,7 +165,7 @@ public class CPedidoBean extends CGeral implements Serializable {
 	}
 	
 	public void gerarReceita() {
-		if(pedido.getCondicaoPagamento().getaVista().equals("s")) {
+		if(pedido.getCondicaoPagamento().isAVista()) {
 			pedido.getCondicaoPagamento().setValorEntrada(BigDecimal.ZERO);
 		}
 		setReceita(null);
@@ -438,14 +438,6 @@ public class CPedidoBean extends CGeral implements Serializable {
 		return this.pedido.getId() != null;
 	}
 	
-	public boolean isAvista() {
-		if(pedido.getCondicaoPagamento().getaVista().equals("s")){
-			this.pedido.getCondicaoPagamento().setQtParcelas(1);
-			return true;
-		} else{
-			return false;
-		}
-	}
 
 	public Procedimento getProcedimentoLinhaEditavel() {
 		return procedimentoLinhaEditavel;

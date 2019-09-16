@@ -28,6 +28,12 @@ body {
 	border: none;
 }
 
+/* schedule */
+div.fc-scroller.fc-time-grid-container {
+	overflow: hidden scroll !important;
+	height: 1535px !important;
+}
+
 .ui-state-disabled {
 	opacity: .60 !important;
 }

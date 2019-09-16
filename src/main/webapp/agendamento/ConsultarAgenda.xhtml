@@ -65,7 +65,7 @@
 				maxTime="22:30" 
 				widgetVar="myschedule" 
 				locale="pt" 
-				timeZone="America/Sao_Paulo">
+				timeZone="America/Sao_Paulo" >
 					<p:ajax event="dateSelect" listener="#{CAgendamentoBean.itemVazioSelecionado}" update="detalhesEvento" oncomplete="PF('eventDialog').show();" />
 		            <p:ajax event="eventSelect" listener="#{CAgendamentoBean.itemSelecionado}" update="detalhesEvento" oncomplete="PF('eventDialog').show();" />
       		</p:schedule>  	

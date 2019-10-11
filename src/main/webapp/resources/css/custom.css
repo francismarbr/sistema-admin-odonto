@@ -31,7 +31,7 @@ body {
 /* schedule */
 div.fc-scroller.fc-time-grid-container {
 	overflow: hidden scroll !important;
-	height: 1535px !important;
+	height: 1550px !important;
 }
 
 .ui-state-disabled {

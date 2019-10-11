@@ -75,7 +75,7 @@
 				<h:panelGrid id="detalhesEvento" columns="2">
 					
 					<p:outputLabel value="Cliente" for="pessoa" />
-					<p:autoComplete id="pessoa" size="40" value="#{CAgendamentoBean.agendamento.cliente}" required="true"
+					<p:autoComplete id="pessoa" size="20" value="#{CAgendamentoBean.agendamento.cliente}" required="true"
 						completeMethod="#{CAgendamentoBean.completarCliente}" converter="pessoaConverter"
 						var="cliente" itemLabel="#{cliente.nome}" itemValue="#{cliente}" forceSelection="true" 
 						disabled="#{CAgendamentoBean.agendamento.status.ordinal == 1 or CAgendamentoBean.agendamento.status.ordinal == 2}" >
@@ -92,8 +92,8 @@
 							itemValue="#{dentista}" itemLabel="#{dentista.nome}" />
 					</p:selectOneMenu>
 					
-					<p:outputLabel for="lembrete" value="Lembrete:" />
-					<p:inputText id="lembrete" value="#{CAgendamentoBean.agendamento.lembrete}" required="true"
+					<p:outputLabel for="procedimento" value="Procedimento:" />
+					<p:inputText id="procedimento" value="#{CAgendamentoBean.agendamento.lembrete}" required="true"
 						disabled="#{CAgendamentoBean.agendamento.status.ordinal == 1 or CAgendamentoBean.agendamento.status.ordinal == 2}" />
 					
 					<p:outputLabel for="dataEvento" value="Data" />
@@ -111,7 +111,7 @@
 						disabled="#{CAgendamentoBean.agendamento.status.ordinal == 1 or CAgendamentoBean.agendamento.status.ordinal == 2}" />
 					
 					<p:outputLabel value="Observação" />
-					<h:inputTextarea value="#{CAgendamentoBean.agendamento.observacao}" cols="30" rows="3"
+					<h:inputTextarea value="#{CAgendamentoBean.agendamento.observacao}" cols="25" rows="3"
 						disabled="#{CAgendamentoBean.agendamento.status.ordinal == 1 or CAgendamentoBean.agendamento.status.ordinal == 2}" />
 						
 					<p:outputLabel value="Status:" rendered="#{CAgendamentoBean.agendamento.status.ordinal == 0 or CAgendamentoBean.agendamento.status.ordinal == 1 

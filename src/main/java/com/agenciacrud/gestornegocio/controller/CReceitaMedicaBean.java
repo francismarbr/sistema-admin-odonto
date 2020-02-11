@@ -64,7 +64,7 @@ public class CReceitaMedicaBean extends CGeral implements Serializable {
 		}
 	}
 
-	private void limpar() {
+	public void limpar() {
 		receita = new ReceitaMedica();
 	}
 	

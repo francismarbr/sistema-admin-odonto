@@ -11,6 +11,7 @@
       	
       	<f:metadata>
 			<f:event listener="#{CReceitaMedicaBean.pesquisar}" type="preRenderView" />
+			<f:event listener="#{CReceitaMedicaBean.inicializar}" type="preRenderView" />
 		</f:metadata>
       	
       	<h1 class="ac-titulo-pagina">Pesquisa Receitas Médicas</h1>
@@ -20,8 +21,10 @@
       		<p:messages autoUpdate="true" closable="true" />
       		
       		<p:toolbar>
-      			<p:toolbarGroup align="right">
-	    			<p:button value="Nova Receita" outcome="/receitasatestados/CadastroReceitaMedica" />
+      			<p:toolbarGroup align="right">    			
+	    			<p:commandButton value="Nova Receita" oncomplete="PF('receitasMedicasWidget').show()" 
+	    				process="@this" action="#{CReceitaMedicaBean.limpar}" update=":frmCadastro:receitasMedicasDialog" />
+	    					    			
 	    		</p:toolbarGroup>
       		</p:toolbar>
       		
@@ -43,7 +46,7 @@
 					
 					<p:panel>
 						<br />
-						<p:commandButton icon="fa fa-filter" value="Filtrar" action="#{CReceitaMedicaBean.pesquisar}" update="@form" />
+						<p:commandButton icon="fa fa-filter" value="Pesquisar" action="#{CReceitaMedicaBean.pesquisar}" update="@form" />
 					</p:panel>
    			
    				</p:panelGrid>
@@ -71,18 +74,86 @@
 	    		</p:column>
 	    		
 	    		<p:column>
-	    			<p:button outcome="/receitasatestados/CadastroReceitaMedica" icon="ui-icon-pencil" title="Editar">
-	    				<f:param name="receita" value="#{receita.chaveRegistro}" />
-	    			</p:button>
+   			
+	    			<p:commandButton icon="ui-icon-pencil" title="Editar" oncomplete="PF('receitasMedicasWidget').show()" 
+	    				process="@this" update=":frmCadastro:receitasMedicasDialog">
+	    				<f:setPropertyActionListener value="#{receita}" target="#{CReceitaMedicaBean.receita(receita)}" />
+	    			</p:commandButton>
 	
 	    			<p:commandButton value="Imprimir" action="#{CImpressaoReceitaMedica.gerarRelatorio(receita)}" ajax="false" />
 	    			
 	    		</p:column>
 	    		
 	    	</p:dataTable>
-	    	
-      		 
       	</h:form>
+      	
+      	<h:form id="frmCadastro" >
+      		<p:dialog widgetVar="receitasMedicasWidget" 
+      			header="#{CReceitaMedicaBean.editando ? 'Edição de Receita Médica por Paciente' : 'Nova Receita Médica por Paciente'}" 
+      			id="receitasMedicasDialog" resizable="false"  responsive="true">
+			
+					<div class="ui-fluid">
+	      			
+   				<p:panelGrid columns="3" layout="grid"
+   						styleClass="panelgrid-noborder">
+   						
+   					<p:panel>
+						<p:outputLabel value="Paciente" for="paciente" />
+							<p:autoComplete id="paciente" size="40" 
+								value="#{CReceitaMedicaBean.receita.paciente}" completeMethod="#{CReceitaMedicaBean.completarCliente}"
+								var="paciente" itemLabel="#{paciente.nome}" itemValue="#{paciente}" forceSelection="true"
+								converter="pessoaConverter" required="true" requiredMessage="O campo 'Paciente' deve ser informado">
+								<p:column>
+									<h:outputText value="#{paciente.cpf} #{paciente.nome}" />
+								</p:column>										
+							</p:autoComplete>
+					</p:panel>
+					
+					<p:panel>
+						<p:outputLabel value="Dentista" for="dentista" />
+						<p:selectOneMenu id="dentista" value="#{CReceitaMedicaBean.receita.dentista}" converter="dentistaConverter">
+							<f:selectItem itemLabel="Selecione" />
+							<f:selectItems value="#{CReceitaMedicaBean.listaDentistas}" var="dentista" 
+								itemValue="#{dentista}" itemLabel="#{dentista.nome}" />
+						</p:selectOneMenu>
+					</p:panel>	
+
+   				</p:panelGrid>
+   				
+   				<p:panelGrid columns="1" layout="grid" styleClass="panelgrid-noborder">
+  					<p:panel>
+  						<p:outputLabel value="Descrição" for ="descricao"/>
+												
+						<p:textEditor widgetVar="editor" id="descricao" value="#{CReceitaMedicaBean.receita.descricao}" height="130" style="margin-bottom:10px" 
+							placeholder="Entre com a descrição da receita">
+					        <f:facet name="toolbar">
+					             <span class="ql-formats">
+					                <button class="ql-bold"></button>
+					                <button class="ql-italic"></button>
+					                <button class="ql-underline"></button>
+					                <button class="ql-strike"></button>
+					            </span>
+					            <span class="ql-formats">
+					                <select class="ql-font"></select>
+					                <select class="ql-size"></select>
+					            </span>
+					        </f:facet>
+					    </p:textEditor>
+						
+   					</p:panel>
+   				</p:panelGrid>
+   				
+   				<p:commandButton value="Salvar"
+						rendered="#{seguranca.liberarMenuEmpresaPlanoMCM}" 
+						id="botaoSalvar" 
+						action="#{CReceitaMedicaBean.salvar}"
+						update=":frmPesquisa:receitasTable" />
+	      		
+      		</div>
+				
+			</p:dialog>
+      	</h:form>
+      	
       </ui:define>
       
 </ui:composition>

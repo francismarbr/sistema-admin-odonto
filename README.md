@@ -37,8 +37,8 @@ Certifique-se de ter os seguintes softwares instalados para executar o projeto:
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seuusuario/seuprojeto.git
-   cd seuprojeto
+   git clone https://github.com/francismarbr/sistema-admin-odonto.git
+   cd adminodonto
    ```
 
 2. Configure o banco de dados PostgreSQL:
@@ -56,7 +56,7 @@ Certifique-se de ter os seguintes softwares instalados para executar o projeto:
 
 6. Inicie Tomcat e acesse o sistema em:
    ```
-   http://localhost:8080/seu-projeto
+   http://localhost:8080/adminodonto
    ```
 
 ## Uso

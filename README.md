@@ -1,4 +1,4 @@
-# Sistema de Gestão (Java EE + Spring Security + JSF + PrimeFaces)
+# Sistema de Gestão Odontológica (Java EE + Spring Security + JSF + PrimeFaces)
 
 Este é um projeto de sistema de gestão odontológica (em formato Saas) desenvolvido em Java EE, usando **Spring Security** para autenticação e autorização, **JSF** e **PrimeFaces** para a interface web. O sistema é executado em um servidor **Tomcat** e utiliza banco de dados **PostgreSQL**.
 

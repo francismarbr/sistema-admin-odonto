@@ -29,26 +29,6 @@
 			<property name="hibernate.c3p0.max_statements" value="50" />
 			<property name="hibernate.c3p0.timeout" value="15" /> -->
 			
-			<!-- 
-				Resource context tomcat 
-				
-				<Resource 
-		    	name="jdbc/crudsistemaDB" 
-		    	auth="Container"
-				factory="org.apache.naming.factory.BeanFactory" 
-				type="com.mchange.v2.c3p0.ComboPooledDataSource"
-				driverClass="org.postgresql.Driver" 
-				jdbcUrl="jdbc:postgresql://odontocrud-postgre.cptoxjevb9eh.sa-east-1.rds.amazonaws.com:5432/odontocrud"
-				user="MasterAdm" 
-				password="*14#05F*"
-				initialPoolSize="3" 
-				minPoolSize="5"
-				maxPoolSize="30" 
-				acquireIncrement="1"
-				maxIdleTime="60"
-				idleConnectionTestPeriod="60"
-				acquireRetryAttempts="5" />	 
-			-->
 			 
 		</properties>
 	 

@@ -2,6 +2,9 @@
 
 Este é um projeto de sistema de gestão odontológica (em formato Saas) desenvolvido em Java EE, usando **Spring Security** para autenticação e autorização, **JSF** e **PrimeFaces** para a interface web. O sistema é executado em um servidor **Tomcat** e utiliza banco de dados **PostgreSQL**.
 
+Clique no link abaixo para conhecer mais sobre a ideia do projeto e porque decidi compartilhá-lo gratuitamente:
+https://www.linkedin.com/posts/francismarramos_estou-compartilhando-de-gra%C3%A7a-o-c%C3%B3digo-fonte-activity-7255969195345989632-fiqb
+
 ## Funcionalidades
 
 - **Autenticação e Autorização**: Gestão de usuários com login e controle de acesso utilizando **Spring Security**.
